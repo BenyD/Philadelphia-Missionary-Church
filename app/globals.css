@@ -120,3 +120,57 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom styles for church website */
+@layer utilities {
+  .glass-morphism {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 bg-clip-text text-transparent;
+  }
+
+  .gradient-bg {
+    @apply bg-gradient-to-br from-blue-50 via-yellow-50 to-orange-50;
+  }
+
+  .church-primary {
+    @apply bg-gradient-to-r from-red-600 to-red-700;
+  }
+
+  .church-secondary {
+    @apply bg-gradient-to-r from-orange-500 to-yellow-500;
+  }
+
+  .church-accent {
+    @apply bg-gradient-to-r from-blue-400 to-blue-500;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+    }
+    to {
+      box-shadow: 0 0 30px rgba(245, 101, 101, 0.8);
+    }
+  }
+}
