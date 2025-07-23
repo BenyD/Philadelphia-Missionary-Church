@@ -1,5 +1,4 @@
 import {
-  Church,
   Mail,
   Phone,
   MapPin,
@@ -8,6 +7,7 @@ import {
   Youtube,
 } from "lucide-react";
 import { Container } from "./container";
+import { Logo } from "@/components/ui/logo";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -66,11 +66,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Church Info */}
           <div className="lg:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg shadow-lg">
-                <Church className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-white">PMC Church</h3>
+            <div className="mb-4">
+              <Logo size="lg" variant="white" />
             </div>
             <p className="text-gray-200 mb-6 leading-relaxed">
               We are a welcoming community dedicated to spreading God's love and
