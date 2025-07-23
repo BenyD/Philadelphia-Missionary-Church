@@ -76,3 +76,4 @@ export function SplashScreenProvider({ children }: SplashScreenProviderProps) {
     </>
   );
 }
+ 

@@ -56,7 +56,7 @@ export default function RootLayout({
       >
         <SplashScreenProvider>
           <NavigationProvider>
-            {children}
+        {children}
           </NavigationProvider>
         </SplashScreenProvider>
       </body>

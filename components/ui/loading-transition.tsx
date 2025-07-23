@@ -15,7 +15,7 @@ export function LoadingTransition({ isLoading }: LoadingTransitionProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-blue-50 via-yellow-50 to-orange-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-blue-50 via-red-50 to-blue-50"
     >
       <div className="text-center space-y-6">
         {/* Animated Church Icon */}
@@ -38,7 +38,7 @@ export function LoadingTransition({ isLoading }: LoadingTransitionProps) {
           }}
           className="flex justify-center"
         >
-          <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-500 rounded-2xl shadow-2xl flex items-center justify-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-red-600 rounded-2xl shadow-2xl flex items-center justify-center">
             <Church className="h-8 w-8 text-white" />
           </div>
         </motion.div>
@@ -71,7 +71,7 @@ export function LoadingTransition({ isLoading }: LoadingTransitionProps) {
                 ease: "easeInOut",
                 delay: index * 0.2,
               }}
-              className="w-3 h-3 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"
+              className="w-3 h-3 bg-gradient-to-r from-blue-500 to-red-500 rounded-full"
             />
           ))}
         </div>

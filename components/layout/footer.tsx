@@ -56,11 +56,11 @@ export function Footer() {
       </div>
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 via-orange-800/15 to-yellow-700/10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 via-red-800/15 to-red-700/10"></div>
 
       {/* Accent Lines */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent"></div>
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent"></div>
       {/* Main Footer Content */}
       <Container className="relative z-10 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
@@ -78,17 +78,17 @@ export function Footer() {
             {/* Contact Info */}
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <MapPin className="h-5 w-5 text-orange-400" />
+                <MapPin className="h-5 w-5 text-red-400" />
                 <span className="text-gray-300">
                   123 Church Street, City, State 12345
                 </span>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="h-5 w-5 text-orange-400" />
+                <Phone className="h-5 w-5 text-red-400" />
                 <span className="text-gray-300">(555) 123-4567</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Mail className="h-5 w-5 text-orange-400" />
+                <Mail className="h-5 w-5 text-red-400" />
                 <span className="text-gray-300">info@pmcchurch.org</span>
               </div>
             </div>
@@ -98,7 +98,7 @@ export function Footer() {
           {footerSections.map((section) => (
             <div key={section.title}>
               <h4 className="text-lg font-semibold mb-4 text-white flex items-center">
-                <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-red-500 rounded-full mr-3"></div>
+                <div className="w-1 h-6 bg-gradient-to-b from-red-600 to-red-500 rounded-full mr-3"></div>
                 {section.title}
               </h4>
               <ul className="space-y-3">
@@ -106,10 +106,13 @@ export function Footer() {
                   <li key={link.name}>
                     <a
                       href={link.href}
-                      className="text-gray-200 hover:text-orange-400 transition-colors duration-200 flex items-center group"
+                      className="text-gray-200 hover:text-red-400 transition-colors duration-200 flex items-center group relative "
                     >
-                      <span className="w-2 h-2 bg-orange-500/50 rounded-full mr-3 group-hover:bg-orange-400 transition-colors"></span>
-                      {link.name}
+                      <span className="w-2 h-2 bg-red-500/50 rounded-full mr-3 group-hover:bg-red-400 transition-colors"></span>
+                      <span className="relative">
+                        {link.name}
+                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300 group-hover:w-full"></span>
+                      </span>
                     </a>
                   </li>
                 ))}
@@ -126,17 +129,18 @@ export function Footer() {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="p-4 bg-gradient-to-br from-orange-500/20 to-red-500/20 hover:from-orange-500/30 hover:to-red-500/30 rounded-xl transition-all duration-300 group border border-orange-500/20 hover:border-orange-500/40"
+                  className="p-4 bg-gradient-to-br from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 rounded-xl transition-all duration-300 group border border-red-500/20 hover:border-red-500/40 hover:scale-105 hover:shadow-lg"
                   aria-label={social.label}
                 >
-                  <social.icon className="h-6 w-6 text-orange-400 group-hover:text-orange-300 transition-colors" />
+                  <social.icon className="h-6 w-6 text-red-400 group-hover:text-red-300 transition-colors group-hover:scale-110" />
                 </a>
               ))}
             </div>
 
             <div className="text-center sm:text-right">
               <p className="text-gray-300 text-sm font-medium">
-                © {currentYear} PMC Church. All rights reserved.
+                © {currentYear} Philadelphia Missionary Church. All rights
+                reserved.
               </p>
               <p className="text-gray-400 text-xs mt-2 flex items-center justify-center sm:justify-end">
                 Made with ❤️ for our community
@@ -147,7 +151,7 @@ export function Footer() {
                   href="https://www.maxsoft.ch/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-orange-400 hover:text-orange-300 transition-colors ml-1"
+                  className="text-red-400 hover:text-red-300 transition-colors ml-1 hover:underline"
                 >
                   Maxsoft AG
                 </a>

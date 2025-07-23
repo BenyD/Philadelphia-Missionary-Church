@@ -40,12 +40,12 @@ export function Logo({
 
   const variantClasses = {
     default: {
-      container: "bg-gradient-to-br from-red-600 to-orange-500",
+      container: "bg-gradient-to-br from-blue-600 to-red-600",
       text: "text-gray-800",
       subtitle: "text-gray-600",
     },
     white: {
-      container: "bg-gradient-to-br from-red-500 to-orange-500",
+      container: "bg-gradient-to-br from-blue-500 to-red-500",
       text: "text-white",
       subtitle: "text-gray-300",
     },
@@ -91,12 +91,7 @@ export function Logo({
       {/* Text Content */}
       {showText && (
         <div className="flex flex-col">
-          <h1
-            className={cn(
-              "font-bold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent",
-              currentSize.text
-            )}
-          >
+          <h1 className={cn("font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent", currentSize.text)}>
             Philadelphia Missionary Church
           </h1>
           <p

@@ -50,7 +50,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
             },
           }}
           transition={{ duration: 0.5 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-blue-50 via-yellow-50 to-orange-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-blue-50 via-red-50 to-blue-50"
         >
           {/* Animated Background Elements */}
           <div className="absolute inset-0 overflow-hidden">
@@ -64,7 +64,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-red-400/20 to-orange-400/20 rounded-full blur-3xl"
+              className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-red-400/20 rounded-full blur-3xl"
             />
             <motion.div
               animate={{
@@ -77,7 +77,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                 ease: "easeInOut",
                 delay: 1,
               }}
-              className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-full blur-3xl"
+              className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-red-400/20 to-blue-400/20 rounded-full blur-3xl"
             />
             <motion.div
               animate={{
@@ -90,7 +90,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                 ease: "easeInOut",
                 delay: 0.5,
               }}
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-blue-400/15 to-yellow-400/15 rounded-full blur-3xl"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-blue-400/15 to-red-400/15 rounded-full blur-3xl"
             />
           </div>
 
@@ -116,7 +116,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                 {/* Logo Container */}
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="relative w-24 h-24 bg-gradient-to-br from-red-600 to-orange-500 rounded-2xl shadow-2xl flex items-center justify-center"
+                  className="relative w-24 h-24 bg-gradient-to-br from-blue-600 to-red-600 rounded-2xl shadow-2xl flex items-center justify-center"
                 >
                   {/* Church Icon */}
                   <motion.div
@@ -142,7 +142,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                    className="absolute inset-0 bg-gradient-to-br from-red-500/50 to-orange-500/50 rounded-2xl blur-xl"
+                    className="absolute inset-0 bg-gradient-to-br from-blue-500/50 to-red-500/50 rounded-2xl blur-xl"
                   />
                 </motion.div>
 
@@ -158,7 +158,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                     ease: "easeInOut",
                     delay: 0.3,
                   }}
-                  className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-400 rounded-full"
+                  className="absolute -top-2 -right-2 w-4 h-4 bg-red-400 rounded-full"
                 />
                 <motion.div
                   animate={{
@@ -184,7 +184,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                     ease: "easeInOut",
                     delay: 0.7,
                   }}
-                  className="absolute top-1/2 -right-4 w-2 h-2 bg-orange-400 rounded-full"
+                  className="absolute top-1/2 -right-4 w-2 h-2 bg-blue-400 rounded-full"
                 />
               </motion.div>
             </div>
@@ -202,7 +202,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                   delay: 0.3,
                   ease: "easeOut",
                 }}
-                className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 bg-clip-text text-transparent"
+                className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent"
               >
                 PMC Church
               </motion.h1>
@@ -234,7 +234,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                     ease: "easeInOut",
                     delay: 0.8,
                   }}
-                  className="h-full bg-gradient-to-r from-red-500 to-orange-500"
+                  className="h-full bg-gradient-to-r from-blue-500 to-red-500"
                 />
               </div>
             </div>
@@ -265,13 +265,13 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="absolute top-8 right-8 w-16 h-16 border-r-4 border-t-4 border-orange-500/30 rounded-tr-2xl"
+            className="absolute top-8 right-8 w-16 h-16 border-r-4 border-t-4 border-blue-500/30 rounded-tr-2xl"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 1.4 }}
-            className="absolute bottom-8 left-8 w-16 h-16 border-l-4 border-b-4 border-yellow-500/30 rounded-bl-2xl"
+            className="absolute bottom-8 left-8 w-16 h-16 border-l-4 border-b-4 border-red-500/30 rounded-bl-2xl"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0 }}
