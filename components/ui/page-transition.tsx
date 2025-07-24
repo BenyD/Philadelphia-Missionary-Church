@@ -1,38 +1,44 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Transition } from "framer-motion";
 import { usePathname } from "next/navigation";
+import { ReactNode } from "react";
 
 interface PageTransitionProps {
-  children: React.ReactNode;
+  children: ReactNode;
+  skipTransition?: boolean;
 }
 
 const pageVariants = {
   initial: {
     opacity: 0,
     y: 20,
-    scale: 0.98,
   },
   in: {
     opacity: 1,
     y: 0,
-    scale: 1,
   },
   out: {
     opacity: 0,
     y: -20,
-    scale: 0.98,
   },
 };
 
-const pageTransition = {
+const pageTransition: Transition = {
   type: "tween",
-  ease: "anticipate",
-  duration: 0.4,
+  ease: "easeInOut",
+  duration: 0.3,
 };
 
-export function PageTransition({ children }: PageTransitionProps) {
+export function PageTransition({
+  children,
+  skipTransition = false,
+}: PageTransitionProps) {
   const pathname = usePathname();
+
+  if (skipTransition) {
+    return <>{children}</>;
+  }
 
   return (
     <AnimatePresence mode="wait" initial={false}>

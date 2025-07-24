@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Transition } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
@@ -37,7 +37,7 @@ const transitionVariants = {
   },
 };
 
-const transitionConfig = {
+const transitionConfig: Transition = {
   type: "tween",
   ease: "easeInOut",
   duration: 0.5,

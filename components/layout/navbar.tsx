@@ -1,7 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, X, ArrowRight, Phone, MapPin, Play } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Menu,
+  X,
+  ArrowRight,
+  Phone,
+  MapPin,
+  Play,
+  ChevronDown,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "./container";
 import { Logo } from "@/components/ui/logo";
@@ -10,57 +18,156 @@ import { AnimatedLink } from "@/components/ui/animated-link";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    let rafId: number;
+    let lastScrollTop = 0;
+    let lastScrollTime = 0;
+
+    const handleScroll = () => {
+      const now = Date.now();
+      const scrollTop = window.scrollY;
+
+      // Throttle scroll events to improve performance
+      if (now - lastScrollTime < 16) {
+        // ~60fps
+        return;
+      }
+
+      // Only update if scroll position changed significantly
+      if (Math.abs(scrollTop - lastScrollTop) < 1) {
+        return;
+      }
+
+      lastScrollTime = now;
+      lastScrollTop = scrollTop;
+
+      // Cancel previous animation frame
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+
+      rafId = requestAnimationFrame(() => {
+        const docHeight =
+          document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+        setIsScrolled(scrollTop > 20);
+        setScrollProgress(Math.min(Math.max(scrollPercent, 0), 100));
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Services", href: "#services" },
-    { name: "Events", href: "#events" },
-    { name: "Ministries", href: "#ministries" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", href: "/" },
+    { name: "About", href: "/about" },
+    { name: "Events", href: "/events" },
+    { name: "Gallery", href: "/gallery" },
+    { name: "Locations", href: "/locations" },
   ];
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-40 bg-white/10 backdrop-blur-md border-b border-white/20">
-        <Container>
-          <div className="flex items-center justify-between h-16 lg:h-20">
+      <nav
+        className={cn(
+          "fixed top-0 left-0 right-0 z-40 transition-all duration-500 ease-in-out",
+          isScrolled
+            ? "bg-white/95 backdrop-blur-xl"
+            : "bg-white/80 backdrop-blur-md"
+        )}
+      >
+        {/* Scroll Progress Bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-200/20 overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-red-600 via-red-500 to-blue-600 transition-all duration-300 ease-out will-change-transform"
+            style={{
+              width: `${scrollProgress}%`,
+              transform: `translateX(${scrollProgress > 0 ? 0 : -100}%)`,
+            }}
+          />
+        </div>
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20px_20px,rgba(0,0,0,0.015)_1px,transparent_1px)] bg-[length:40px_40px]"></div>
+        </div>
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-red-50/20 via-transparent to-blue-50/20"></div>
+
+        <Container className="relative z-10">
+          <div className="flex items-center justify-between h-16 lg:h-18">
             {/* Logo */}
-            <div className="flex items-center space-x-3">
-              <Logo size="md" className="hidden sm:flex" />
-              <Logo size="sm" className="sm:hidden" showText={false} />
+            <AnimatedLink
+              href="/"
+              className="flex items-center space-x-3 group"
+            >
+              <div className="relative">
+                <Logo
+                  size="md"
+                  className="hidden sm:flex transition-transform duration-300 group-hover:scale-105"
+                />
+                <Logo size="sm" className="sm:hidden" showText={false} />
+                <div className="absolute -inset-2 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+              </div>
               <div className="sm:hidden">
                 <h1 className="text-lg font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
                   PMC Church
                 </h1>
               </div>
-            </div>
+            </AnimatedLink>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-8">
-              {navItems.map((item) => (
-                <AnimatedLink
-                  key={item.name}
-                  href={item.href}
-                  transitionType="fade"
-                  className="text-gray-700 hover:text-red-600 transition-colors duration-200 font-medium relative group"
-                >
-                  {item.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300 group-hover:w-full"></span>
-                </AnimatedLink>
-              ))}
-              <Button className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 py-2 rounded-full">
-                Join Us
-              </Button>
+            <div className="hidden lg:flex items-center space-x-6">
+              {/* Main Navigation Items */}
+              <div className="flex items-center space-x-1">
+                {navItems.map((item, index) => (
+                  <div key={item.name} className="relative group">
+                    <AnimatedLink
+                      href={item.href}
+                      transitionType="fade"
+                      className="relative text-gray-700 hover:text-red-600 transition-colors duration-200 font-medium px-4 py-2.5"
+                    >
+                      <span className="relative">
+                        {item.name}
+                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300 group-hover:w-full"></span>
+                      </span>
+                    </AnimatedLink>
+                  </div>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="w-px h-6 bg-gradient-to-b from-transparent via-gray-300 to-transparent mx-2"></div>
+
+              {/* CTA Button */}
+              <AnimatedLink href="/prayer-request" transitionType="fade">
+                <Button className="relative overflow-hidden bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 group border-0">
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-red-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <Phone className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-300" />
+                  <span className="relative z-10">Prayer Request</span>
+                </Button>
+              </AnimatedLink>
             </div>
 
             {/* Mobile Menu Button */}
             <button
               onClick={toggleMenu}
-              className="lg:hidden p-3 rounded-xl bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 transition-all duration-300 border border-red-200/50 hover:border-red-300/50"
+              className="lg:hidden relative p-3 rounded-xl bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 transition-all duration-300 border border-red-200/50 hover:border-red-300/50 group overflow-hidden"
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-red-400/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative w-6 h-6">
                 <span
                   className={`absolute top-1 left-0 w-6 h-0.5 bg-gray-700 transition-all duration-300 ${
@@ -117,9 +224,10 @@ export function Navbar() {
             {/* Navigation Items */}
             <div className="space-y-2 mb-6">
               {navItems.map((item, index) => (
-                <a
+                <AnimatedLink
                   key={item.name}
                   href={item.href}
+                  transitionType="fade"
                   className="block p-4 rounded-xl text-white hover:text-red-400 hover:bg-white/5 transition-all duration-300 font-medium relative group border border-transparent hover:border-red-500/30 hover:scale-[1.02]"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -127,41 +235,32 @@ export function Navbar() {
                     <div className="w-3 h-3 bg-red-500 rounded-full group-hover:scale-125 transition-transform"></div>
                     <span className="text-lg">{item.name}</span>
                   </div>
-                </a>
+                </AnimatedLink>
               ))}
-            </div>
-
-            {/* Quick Actions */}
-            <div className="space-y-3">
-              <Button className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group">
-                <span>Join Now</span>
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-
-              <Button className="w-full bg-white/10 hover:bg-white/20 border border-white/30 text-white px-6 py-4 rounded-xl text-lg font-semibold transition-all duration-300 group hover:scale-[1.02]">
-                <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                Watch Live Stream
-              </Button>
             </div>
           </div>
 
           {/* Footer */}
           <div className="p-6 border-t border-gray-700/50 bg-black/10">
             <div className="grid grid-cols-2 gap-4 text-center">
-              <a
-                href="tel:+15551234567"
+              <AnimatedLink
+                href="/prayer-request"
+                transitionType="fade"
+                onClick={() => setIsMenuOpen(false)}
                 className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 border border-white/10 hover:scale-105"
               >
                 <Phone className="h-5 w-5 text-red-400 mx-auto mb-2" />
-                <span className="text-sm text-gray-300">Call Us</span>
-              </a>
-              <a
-                href="#"
+                <span className="text-sm text-gray-300">Prayer Request</span>
+              </AnimatedLink>
+              <AnimatedLink
+                href="/locations"
+                transitionType="fade"
+                onClick={() => setIsMenuOpen(false)}
                 className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 border border-white/10 hover:scale-105"
               >
                 <MapPin className="h-5 w-5 text-red-400 mx-auto mb-2" />
-                <span className="text-sm text-gray-300">Directions</span>
-              </a>
+                <span className="text-sm text-gray-300">Locations</span>
+              </AnimatedLink>
             </div>
 
             <div className="mt-4 text-center">

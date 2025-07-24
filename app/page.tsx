@@ -1,6 +1,10 @@
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { HeroSection } from "@/components/hero/hero-section";
+import { HeroSection } from "@/components/sections/hero-section";
+import { WhoWeAre } from "@/components/sections/who-we-are";
+import { UpcomingEvents } from "@/components/sections/upcoming-events";
+import { Pastors } from "@/components/sections/pastors";
+import { CTASection } from "@/components/sections/cta-section";
 import { generateMetadata } from "@/lib/metadata";
 import type { Metadata } from "next";
 
@@ -26,6 +30,10 @@ export default function Home() {
     <main className="min-h-screen">
       <Navbar />
       <HeroSection />
+      <WhoWeAre />
+      <UpcomingEvents />
+      <Pastors />
+      <CTASection />
       <Footer />
     </main>
   );
