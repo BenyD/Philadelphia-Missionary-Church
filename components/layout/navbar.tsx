@@ -110,21 +110,14 @@ export function Navbar() {
         <Container className="relative z-10">
           <div className="flex items-center justify-between h-16 lg:h-18">
             {/* Logo */}
-            <AnimatedLink
-              href="/"
-              className="flex items-center space-x-3 group"
-            >
+            <AnimatedLink href="/" className="flex items-center space-x-3">
               <div className="relative">
-                <Logo
-                  size="md"
-                  className="hidden sm:flex transition-transform duration-300 group-hover:scale-105"
-                />
+                <Logo size="md" className="hidden sm:flex" />
                 <Logo size="sm" className="sm:hidden" showText={false} />
-                <div className="absolute -inset-2 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
               </div>
               <div className="sm:hidden">
                 <h1 className="text-lg font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-                  PMC Church
+                  PMC
                 </h1>
               </div>
             </AnimatedLink>

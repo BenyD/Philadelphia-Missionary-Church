@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,8 @@ import {
   Globe,
   ArrowRight,
   Mail,
+  Search,
+  Filter,
 } from "lucide-react";
 
 interface ChurchLocation {
@@ -26,11 +29,11 @@ interface ChurchLocation {
     type: string;
     location?: string;
   }[];
-  pastor: {
+  contacts: {
     name: string;
     phone: string;
-    email?: string;
-  };
+    role?: string;
+  }[];
   image?: string;
 }
 
@@ -58,203 +61,252 @@ const churchLocations: ChurchLocation[] = [
         type: "Sunday Service",
       },
     ],
-    pastor: {
-      name: "Pastor Joshua",
-      phone: "079 375 68 32",
-    },
+    contacts: [
+      {
+        name: "Pastor Joshua",
+        phone: "079 375 68 32",
+        role: "Pastor",
+      },
+    ],
   },
   {
     id: "zurich",
     name: "PMC Zürich",
-    address: "Badenerstrasse 420, 8004 Zürich",
+    address: "Neeracherstrasse 20, 8157 Dielsdorf",
     services: [
+      {
+        day: "Every Tuesday",
+        time: "19:00 - 20:00",
+        type: "Women's Prayer",
+        location: "@Zoom",
+      },
       {
         day: "Every Wednesday",
         time: "19:00 - 20:30",
-        type: "Prayer Meeting",
+        type: "Prayer",
+        location: "@PMC Zürich",
       },
       {
         day: "Every Sunday",
-        time: "10:00 - 13:00",
+        time: "09:30 - 12:30",
         type: "Sunday Service",
       },
     ],
-    pastor: {
-      name: "Pastor Michael",
-      phone: "076 123 45 67",
-    },
+    contacts: [
+      {
+        name: "Pastor Joshua",
+        phone: "079 375 68 32",
+        role: "Pastor",
+      },
+      {
+        name: "Bro. Logan",
+        phone: "076 451 58 82",
+        role: "Brother",
+      },
+    ],
   },
   {
     id: "basel",
     name: "PMC Basel",
-    address: "Rheinstrasse 25, 4052 Basel",
+    address: "Missionsstrasse 37, 4055 Basel",
     services: [
       {
-        day: "Every Thursday",
-        time: "19:00 - 20:30",
-        type: "Prayer Meeting",
-      },
-      {
         day: "Every Sunday",
-        time: "09:00 - 12:00",
+        time: "14:00 - 16:30",
         type: "Sunday Service",
       },
     ],
-    pastor: {
-      name: "Pastor Sarah",
-      phone: "078 987 65 43",
-    },
+    contacts: [
+      {
+        name: "Pastor Joseph",
+        phone: "079 512 73 18",
+        role: "Pastor",
+      },
+      {
+        name: "Bro. Boaz",
+        phone: "077 966 16 44",
+        role: "Brother",
+      },
+    ],
   },
   {
-    id: "geneva",
-    name: "PMC Genève",
-    address: "Rue de Lausanne 145, 1202 Genève",
+    id: "schaffhausen",
+    name: "PMC Schaffhausen",
+    address: "Address will come",
     services: [
       {
-        day: "Every Tuesday",
-        time: "19:00 - 20:30",
-        type: "Prayer Meeting",
-      },
-      {
         day: "Every Sunday",
-        time: "10:30 - 13:30",
+        time: "14:00 - 16:30",
         type: "Sunday Service",
       },
     ],
-    pastor: {
-      name: "Pastor David",
-      phone: "077 456 78 90",
-    },
+    contacts: [
+      {
+        name: "Bro. Boaz",
+        phone: "076 451 58 82",
+        role: "Brother",
+      },
+    ],
+  },
+  {
+    id: "luzern",
+    name: "PMC Luzern",
+    address: "Industriestrasse 13, 6010 Kriens",
+    services: [
+      {
+        day: "Every Sunday",
+        time: "14:00 - 16:30",
+        type: "Sunday Service",
+      },
+    ],
+    contacts: [
+      {
+        name: "Bro. Sri",
+        phone: "076 414 65 69",
+        role: "Brother",
+      },
+      {
+        name: "Bro. Pushparajah",
+        phone: "076 414 65 69",
+        role: "Brother",
+      },
+    ],
+  },
+  {
+    id: "solothurn",
+    name: "PMC Solothurn",
+    address: "Bielstrasse 26, 4500 Solothurn",
+    services: [
+      {
+        day: "Every Sunday",
+        time: "14:00 - 17:00",
+        type: "Sunday Service",
+      },
+    ],
+    contacts: [
+      {
+        name: "Bro. Devananth",
+        phone: "079 517 51 96",
+        role: "Brother",
+      },
+      {
+        name: "Bro. Denesh",
+        phone: "079 605 89 60",
+        role: "Brother",
+      },
+    ],
+  },
+  {
+    id: "yverdon",
+    name: "PMC Yverdon",
+    address: "Rue Pestalozzi 9, 1400 Yverdon-les-Bains",
+    services: [
+      {
+        day: "Every Sunday",
+        time: "15:30 - 17:30",
+        type: "Sunday Service",
+      },
+    ],
+    contacts: [
+      {
+        name: "Pastor Anton",
+        phone: "079 598 36 17",
+        role: "Pastor",
+      },
+    ],
+  },
+  {
+    id: "fribourg",
+    name: "PMC Fribourg",
+    address: "Rte de Moncor 2A, 1752 Villars-sur-Glane",
+    services: [
+      {
+        day: "Every Sunday",
+        time: "17:30 - 20:00",
+        type: "Sunday Service",
+      },
+    ],
+    contacts: [
+      {
+        name: "Pastor Anton",
+        phone: "079 598 36 17",
+        role: "Pastor",
+      },
+    ],
   },
   {
     id: "lausanne",
     name: "PMC Lausanne",
-    address: "Avenue de la Gare 15, 1003 Lausanne",
+    address: "Avenue des Boveresses 58, 1010 Lausanne",
     services: [
       {
-        day: "Every Wednesday",
-        time: "19:00 - 20:30",
-        type: "Prayer Meeting",
-      },
-      {
         day: "Every Sunday",
-        time: "09:30 - 12:30",
+        time: "14:30 - 16:00",
         type: "Sunday Service",
       },
     ],
-    pastor: {
-      name: "Pastor Anna",
-      phone: "079 234 56 78",
-    },
+    contacts: [
+      {
+        name: "Pastor Caleb",
+        phone: "078 176 17 36",
+        role: "Pastor",
+      },
+    ],
   },
   {
-    id: "lucerne",
-    name: "PMC Luzern",
-    address: "Pilatusstrasse 30, 6003 Luzern",
+    id: "geneva",
+    name: "PMC Geneva",
+    address: "Rue Elisabeth-Baulacre 14, 1202 Genève",
     services: [
       {
-        day: "Every Thursday",
-        time: "19:00 - 20:30",
-        type: "Prayer Meeting",
-      },
-      {
         day: "Every Sunday",
-        time: "10:00 - 13:00",
+        time: "14:30 - 16:00",
         type: "Sunday Service",
       },
     ],
-    pastor: {
-      name: "Pastor Thomas",
-      phone: "076 789 01 23",
-    },
-  },
-  {
-    id: "st-gallen",
-    name: "PMC St. Gallen",
-    address: "Neugasse 55, 9000 St. Gallen",
-    services: [
+    contacts: [
       {
-        day: "Every Tuesday",
-        time: "19:00 - 20:30",
-        type: "Prayer Meeting",
-      },
-      {
-        day: "Every Sunday",
-        time: "09:30 - 12:30",
-        type: "Sunday Service",
+        name: "Pastor Balendra",
+        phone: "+33 6 23 35 23 35",
+        role: "Pastor",
       },
     ],
-    pastor: {
-      name: "Pastor Maria",
-      phone: "078 345 67 89",
-    },
-  },
-  {
-    id: "winterthur",
-    name: "PMC Winterthur",
-    address: "Marktgasse 25, 8400 Winterthur",
-    services: [
-      {
-        day: "Every Wednesday",
-        time: "19:00 - 20:30",
-        type: "Prayer Meeting",
-      },
-      {
-        day: "Every Sunday",
-        time: "10:00 - 13:00",
-        type: "Sunday Service",
-      },
-    ],
-    pastor: {
-      name: "Pastor Peter",
-      phone: "077 567 89 01",
-    },
-  },
-  {
-    id: "thun",
-    name: "PMC Thun",
-    address: "Hauptgasse 15, 3600 Thun",
-    services: [
-      {
-        day: "Every Thursday",
-        time: "19:00 - 20:30",
-        type: "Prayer Meeting",
-      },
-      {
-        day: "Every Sunday",
-        time: "09:30 - 12:30",
-        type: "Sunday Service",
-      },
-    ],
-    pastor: {
-      name: "Pastor Lisa",
-      phone: "079 678 90 12",
-    },
-  },
-  {
-    id: "chur",
-    name: "PMC Chur",
-    address: "Reichsgasse 10, 7000 Chur",
-    services: [
-      {
-        day: "Every Tuesday",
-        time: "19:00 - 20:30",
-        type: "Prayer Meeting",
-      },
-      {
-        day: "Every Sunday",
-        time: "10:00 - 13:00",
-        type: "Sunday Service",
-      },
-    ],
-    pastor: {
-      name: "Pastor John",
-      phone: "076 890 12 34",
-    },
   },
 ];
 
 export function LocationsContent() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedService, setSelectedService] = useState("all");
+
+  // Get unique service types for filter
+  const serviceTypes = useMemo(() => {
+    const types = new Set<string>();
+    churchLocations.forEach((location) => {
+      location.services.forEach((service) => {
+        types.add(service.type);
+      });
+    });
+    return Array.from(types).sort();
+  }, []);
+
+  // Filter locations based on search term and service type
+  const filteredLocations = useMemo(() => {
+    return churchLocations.filter((location) => {
+      const matchesSearch =
+        location.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        location.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        location.contacts.some((contact) =>
+          contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+      const matchesService =
+        selectedService === "all" ||
+        location.services.some((service) => service.type === selectedService);
+
+      return matchesSearch && matchesService;
+    });
+  }, [searchTerm, selectedService]);
+
   return (
     <section className="relative pt-20 pb-12 md:pt-20 md:pb-16 lg:pt-24 lg:pb-24 overflow-hidden">
       {/* Enhanced Background with Glass Morphism */}
@@ -281,7 +333,7 @@ export function LocationsContent() {
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4 md:mb-6">
             <span className="bg-gradient-to-r from-red-600 via-red-500 to-red-600 bg-clip-text text-transparent">
-              Our Locations
+              Locations and Services
             </span>
           </h1>
           <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed px-4 lg:px-0">
@@ -308,7 +360,7 @@ export function LocationsContent() {
               </motion.div>
             </div>
             <div className="text-2xl md:text-3xl font-bold text-gray-800 mb-1 md:mb-2">
-              10
+              {churchLocations.length}
             </div>
             <div className="text-sm md:text-base text-gray-600">Churches</div>
           </div>
@@ -359,9 +411,58 @@ export function LocationsContent() {
           </div>
         </motion.div>
 
+        {/* Search and Filter Section */}
+        <motion.div
+          className="mb-8 md:mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <div className="bg-white rounded-2xl p-4 md:p-6 shadow-lg border border-gray-200">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+              {/* Search Input */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by location, city, or pastor..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 md:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 text-sm md:text-base"
+                />
+              </div>
+
+              {/* Service Type Filter */}
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <select
+                  value={selectedService}
+                  onChange={(e) => setSelectedService(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 md:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 appearance-none bg-white text-sm md:text-base"
+                >
+                  <option value="all">All Services</option>
+                  {serviceTypes.map((serviceType) => (
+                    <option key={serviceType} value={serviceType}>
+                      {serviceType}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Results Count */}
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-600">
+                Showing {filteredLocations.length} of {churchLocations.length}{" "}
+                locations
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Locations Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-12 md:mb-16">
-          {churchLocations.map((location, index) => (
+        <div className="grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 mb-12 md:mb-16">
+          {filteredLocations.map((location, index) => (
             <motion.div
               key={location.id}
               className="relative group"
@@ -369,28 +470,28 @@ export function LocationsContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 duration: 0.8,
-                delay: 0.3 + index * 0.1,
+                delay: 0.4 + index * 0.1,
                 ease: "easeOut",
               }}
             >
-              <div className="absolute -inset-4 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative bg-white rounded-2xl md:rounded-3xl overflow-hidden border border-gray-200 hover:border-red-200 transition-all duration-300">
+              <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-xl md:rounded-2xl blur-lg md:blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative bg-white rounded-xl md:rounded-2xl overflow-hidden border border-gray-200 hover:border-red-200 transition-all duration-300">
                 {/* Header */}
                 <div className="bg-gradient-to-r from-red-600 to-red-500 p-4 md:p-6 text-white">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xl md:text-2xl font-bold">
+                    <h3 className="text-lg md:text-xl lg:text-2xl font-bold">
                       {location.name}
                     </h3>
                     <motion.div
-                      className="p-1.5 md:p-2 bg-white/20 rounded-full"
+                      className="p-1 md:p-1.5 lg:p-2 bg-white/20 rounded-full"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
-                      <MapPin className="h-5 w-5 md:h-6 md:w-6" />
+                      <MapPin className="h-4 w-4 md:h-5 md:w-5 lg:h-6 lg:w-6" />
                     </motion.div>
                   </div>
-                  <div className="flex items-center gap-2 text-red-100">
-                    <MapPin className="h-3 w-3 md:h-4 md:w-4" />
-                    <span className="text-xs md:text-sm">
+                  <div className="flex items-start gap-2 text-red-100">
+                    <MapPin className="h-3 w-3 md:h-4 md:w-4 mt-0.5 flex-shrink-0" />
+                    <span className="text-xs md:text-sm leading-relaxed">
                       {location.address}
                     </span>
                   </div>
@@ -400,7 +501,7 @@ export function LocationsContent() {
                 <div className="p-4 md:p-6">
                   <div className="flex items-center gap-2 mb-3 md:mb-4">
                     <Clock className="h-4 w-4 md:h-5 md:w-5 text-red-600" />
-                    <h4 className="text-base md:text-lg font-semibold text-gray-800">
+                    <h4 className="text-sm md:text-base lg:text-lg font-semibold text-gray-800">
                       Services
                     </h4>
                   </div>
@@ -411,11 +512,11 @@ export function LocationsContent() {
                         className="flex items-start gap-2 md:gap-3 p-2 md:p-3 bg-gray-50 rounded-lg md:rounded-xl hover:bg-red-50 transition-colors"
                       >
                         <div className="flex-shrink-0 w-1.5 h-1.5 md:w-2 md:h-2 bg-red-500 rounded-full mt-1.5 md:mt-2"></div>
-                        <div className="flex-1">
-                          <div className="font-medium text-sm md:text-base text-gray-800">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm md:text-base text-gray-800 break-words">
                             {service.day} - {service.time}
                           </div>
-                          <div className="text-xs md:text-sm text-gray-600">
+                          <div className="text-xs md:text-sm text-gray-600 break-words">
                             {service.type}
                             {service.location && (
                               <span className="text-red-600 ml-1">
@@ -428,48 +529,49 @@ export function LocationsContent() {
                     ))}
                   </div>
 
-                  {/* Pastor Contact */}
+                  {/* Contacts */}
                   <div className="border-t border-gray-200 pt-3 md:pt-4">
                     <div className="flex items-center gap-2 mb-2 md:mb-3">
                       <Users className="h-4 w-4 md:h-5 md:w-5 text-blue-600" />
-                      <h4 className="text-base md:text-lg font-semibold text-gray-800">
+                      <h4 className="text-sm md:text-base lg:text-lg font-semibold text-gray-800">
                         Contact
                       </h4>
                     </div>
-                    <div className="space-y-1.5 md:space-y-2">
-                      <div className="flex items-center gap-2 text-gray-700">
-                        <Star className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
-                        <span className="font-medium text-sm md:text-base">
-                          {location.pastor.name}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <Phone className="h-3 w-3 md:h-4 md:w-4" />
-                        <a
-                          href={`tel:${location.pastor.phone}`}
-                          className="hover:text-red-600 transition-colors text-sm md:text-base"
+                    <div className="space-y-3 md:space-y-4">
+                      {location.contacts.map((contact, contactIndex) => (
+                        <div
+                          key={contactIndex}
+                          className="space-y-1.5 md:space-y-2"
                         >
-                          {location.pastor.phone}
-                        </a>
-                      </div>
-                      {location.pastor.email && (
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <Mail className="h-3 w-3 md:h-4 md:w-4" />
-                          <a
-                            href={`mailto:${location.pastor.email}`}
-                            className="hover:text-red-600 transition-colors text-sm md:text-base"
-                          >
-                            {location.pastor.email}
-                          </a>
+                          <div className="flex items-center gap-2 text-gray-700 flex-wrap">
+                            <Star className="h-3 w-3 md:h-4 md:w-4 text-red-500 flex-shrink-0" />
+                            <span className="font-medium text-sm md:text-base break-words">
+                              {contact.name}
+                            </span>
+                            {contact.role && (
+                              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full flex-shrink-0">
+                                {contact.role}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-600 ml-5">
+                            <Phone className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
+                            <a
+                              href={`tel:${contact.phone}`}
+                              className="hover:text-red-600 transition-colors text-sm md:text-base break-all"
+                            >
+                              {contact.phone}
+                            </a>
+                          </div>
                         </div>
-                      )}
+                      ))}
                     </div>
                   </div>
                 </div>
 
                 {/* Action Button */}
                 <div className="px-4 md:px-6 pb-4 md:pb-6">
-                  <Button className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white rounded-lg md:rounded-xl group text-sm md:text-base py-2 md:py-3">
+                  <Button className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white rounded-lg md:rounded-xl group text-sm md:text-base py-2.5 md:py-3">
                     <MapPin className="mr-2 h-3 w-3 md:h-4 md:w-4 group-hover:scale-110 transition-transform" />
                     Get Directions
                     <ArrowRight className="ml-2 h-3 w-3 md:h-4 md:w-4 group-hover:translate-x-1 transition-transform" />
@@ -479,6 +581,35 @@ export function LocationsContent() {
             </motion.div>
           ))}
         </div>
+
+        {/* No Results Message */}
+        {filteredLocations.length === 0 && (
+          <motion.div
+            className="text-center py-8 md:py-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="bg-white rounded-xl md:rounded-2xl p-6 md:p-8 shadow-lg border border-gray-200">
+              <Search className="h-8 w-8 md:h-12 md:w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-2">
+                No locations found
+              </h3>
+              <p className="text-gray-600 mb-4 text-sm md:text-base">
+                Try adjusting your search terms or service filter.
+              </p>
+              <Button
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedService("all");
+                }}
+                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white text-sm md:text-base"
+              >
+                Clear Filters
+              </Button>
+            </div>
+          </motion.div>
+        )}
       </Container>
     </section>
   );

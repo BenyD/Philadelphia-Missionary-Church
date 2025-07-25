@@ -45,18 +45,13 @@ export function Footer() {
   const socialLinks = [
     {
       icon: Facebook,
-      href: "https://www.facebook.com/pmcchurch",
+      href: "https://www.facebook.com/pmcinternational.1989",
       label: "Facebook",
     },
     {
       icon: Instagram,
-      href: "https://www.instagram.com/pmcchurch",
+      href: "https://www.instagram.com/pmc.international.official/",
       label: "Instagram",
-    },
-    {
-      icon: Youtube,
-      href: "https://www.youtube.com/pmcchurch",
-      label: "YouTube",
     },
   ];
 
@@ -90,21 +85,46 @@ export function Footer() {
 
             {/* Contact Info */}
             <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <MapPin className="h-5 w-5 text-red-400" />
-                <span className="text-gray-300">
-                  Multiple locations across Switzerland
-                </span>
+              <div className="flex items-start space-x-3">
+                <MapPin className="h-5 w-5 text-red-400 mt-0.5 flex-shrink-0" />
+                <div className="text-gray-300">
+                  <div className="font-medium">
+                    Philadelphia Missionary Church
+                  </div>
+                  <div>Sulgeneckstrasse 58</div>
+                  <div>3005 Bern, Switzerland</div>
+                </div>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="h-5 w-5 text-red-400" />
-                <span className="text-gray-300">
-                  Contact your nearest location
-                </span>
+                <Mail className="h-5 w-5 text-red-400 flex-shrink-0" />
+                <a
+                  href="mailto:info@pmcinternational.ch"
+                  className="text-gray-300 hover:text-red-400 transition-colors duration-200"
+                >
+                  info@pmcinternational.ch
+                </a>
               </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="h-5 w-5 text-red-400" />
-                <span className="text-gray-300">info@pmcchurch.ch</span>
+            </div>
+
+            {/* Connect with Us */}
+            <div className="mt-6">
+              <h5 className="text-sm font-semibold text-white mb-3 flex items-center">
+                <div className="w-1 h-4 bg-gradient-to-b from-red-600 to-red-500 rounded-full mr-2"></div>
+                Connect with Us On:
+              </h5>
+              <div className="flex space-x-3">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 bg-gradient-to-br from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 rounded-lg transition-all duration-300 group border border-red-500/20 hover:border-red-500/40 hover:scale-105"
+                    aria-label={social.label}
+                  >
+                    <social.icon className="h-5 w-5 text-red-400 group-hover:text-red-300 transition-colors group-hover:scale-110" />
+                  </a>
+                ))}
               </div>
             </div>
           </div>
@@ -155,42 +175,16 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Social Links */}
+        {/* Copyright */}
         <div className="mt-8 pt-8 border-t border-gray-700/50">
-          <div className="flex flex-col sm:flex-row justify-between items-center space-y-6 sm:space-y-0">
-            <div className="flex space-x-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  className="p-4 bg-gradient-to-br from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 rounded-xl transition-all duration-300 group border border-red-500/20 hover:border-red-500/40 hover:scale-105 hover:shadow-lg"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-6 w-6 text-red-400 group-hover:text-red-300 transition-colors group-hover:scale-110" />
-                </a>
-              ))}
-            </div>
-
-            <div className="text-center sm:text-right">
-              <p className="text-gray-300 text-sm font-medium">
-                © {currentYear} Philadelphia Missionary Church. All rights
-                reserved.
-              </p>
-              <p className="text-gray-400 text-xs mt-2 flex items-center justify-center sm:justify-end">
-                Made with ❤️ for our community
-              </p>
-              <p className="text-gray-400 text-xs mt-2 flex items-center justify-center sm:justify-end">
-                Developed by{" "}
-                <a
-                  href="https://www.maxsoft.ch/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-red-400 hover:text-red-300 transition-colors ml-1 hover:underline"
-                >
-                  Maxsoft AG
-                </a>
-              </p>
-            </div>
+          <div className="text-center">
+            <p className="text-gray-300 text-sm font-medium">
+              © {currentYear} Philadelphia Missionary Church. All rights
+              reserved.
+            </p>
+            <p className="text-gray-400 text-xs mt-2 flex items-center justify-center">
+              Made with ❤️ for our community
+            </p>
           </div>
         </div>
       </Container>
