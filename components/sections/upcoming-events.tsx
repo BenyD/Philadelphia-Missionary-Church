@@ -6,41 +6,49 @@ import { Button } from "@/components/ui/button";
 import { Calendar, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { EventCard } from "@/components/ui/event-card";
+import { useEffect, useState } from "react";
 
-const upcomingEvents = [
-  {
-    id: "1",
-    title: "Sunday Worship Service",
-    date: "Every Sunday",
-    time: "10:00 AM",
-    location: "Main Sanctuary",
-    description:
-      "Join us for inspiring worship, powerful preaching, and meaningful fellowship every Sunday morning.",
-    category: "Worship",
-  },
-  {
-    id: "2",
-    title: "Bible Study & Prayer",
-    date: "Every Wednesday",
-    time: "7:00 PM",
-    location: "Fellowship Hall",
-    description:
-      "Deepen your understanding of God's Word through our weekly Bible study and prayer sessions.",
-    category: "Study",
-  },
-  {
-    id: "3",
-    title: "Youth Ministry Meeting",
-    date: "Every Friday",
-    time: "6:30 PM",
-    location: "Youth Center",
-    description:
-      "A dynamic gathering for young people to grow in faith, build friendships, and have fun together.",
-    category: "Youth",
-  },
-];
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  image_url?: string;
+  is_featured: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Empty events array - no fallback data
+const emptyEvents: Event[] = [];
 
 export function UpcomingEvents() {
+  const [events, setEvents] = useState<Event[]>(emptyEvents);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/events?upcoming=true&limit=3");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.events && data.events.length > 0) {
+            setEvents(data.events);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        // Don't keep fallback data - show empty state
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   return (
     <section className="relative py-12 md:py-16 lg:py-24 overflow-hidden">
       {/* Simplified Background */}
@@ -87,26 +95,72 @@ export function UpcomingEvents() {
         </motion.div>
 
         {/* Events Grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-          viewport={{ once: true }}
-        >
-          {upcomingEvents.map((event) => (
-            <EventCard
-              key={event.id}
-              id={event.id}
-              title={event.title}
-              date={event.date}
-              time={event.time}
-              location={event.location}
-              description={event.description}
-              category={event.category}
-            />
-          ))}
-        </motion.div>
+        {loading ? (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-white/70 backdrop-blur-md rounded-2xl p-6 space-y-4">
+                  <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                  <div className="h-6 bg-gray-200 rounded"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="space-y-2">
+                    <div className="h-3 bg-gray-200 rounded"></div>
+                    <div className="h-3 bg-gray-200 rounded"></div>
+                    <div className="h-3 bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        ) : events.length > 0 ? (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            {events.map((event) => (
+              <EventCard
+                key={event.id}
+                id={event.id}
+                title={event.title}
+                date={event.date}
+                time={event.time}
+                location={event.location}
+                description={event.description}
+                category="Event"
+                isFeatured={event.is_featured}
+              />
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-8 md:p-12 border-2 border-gray-200">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                <Calendar className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-xl md:text-2xl font-semibold text-gray-700 mb-2">
+                No Upcoming Events
+              </h3>
+              <p className="text-gray-500 text-sm md:text-base">
+                Check back soon for our upcoming events and activities.
+              </p>
+            </div>
+          </motion.div>
+        )}
 
         {/* View All Events Button */}
         <motion.div

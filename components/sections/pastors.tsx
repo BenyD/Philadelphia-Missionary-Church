@@ -3,47 +3,45 @@
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { Star } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const pastors = [
-  {
-    name: "Pastor John Smith",
-    role: "Lead Pastor",
-    imageUrl:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80",
-  },
-  {
-    name: "Pastor Sarah Johnson",
-    role: "Associate Pastor",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80",
-  },
-  {
-    name: "Pastor Michael Chen",
-    role: "Youth Pastor",
-    imageUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80",
-  },
-  {
-    name: "Pastor Emily Davis",
-    role: "Worship Pastor",
-    imageUrl:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80",
-  },
-  {
-    name: "Pastor David Wilson",
-    role: "Outreach Pastor",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80",
-  },
-  {
-    name: "Pastor Lisa Brown",
-    role: "Children's Pastor",
-    imageUrl:
-      "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80",
-  },
-];
+interface Pastor {
+  id: string;
+  name: string;
+  role: string;
+  phone?: string;
+  location?: string;
+  imageUrl: string;
+}
+
+// Empty pastors array - no fallback data
+const emptyPastors: Pastor[] = [];
 
 export function Pastors() {
+  const [pastors, setPastors] = useState<Pastor[]>(emptyPastors);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPastors = async () => {
+      try {
+        const response = await fetch("/api/pastors");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.pastors && data.pastors.length > 0) {
+            setPastors(data.pastors);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching pastors:", error);
+        // Don't keep fallback data - show empty state
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPastors();
+  }, []);
+
   return (
     <section className="relative py-12 md:py-16 lg:py-24 overflow-hidden">
       {/* Simplified Background */}
@@ -89,45 +87,84 @@ export function Pastors() {
           </p>
         </motion.div>
 
-        <motion.ul
-          role="list"
-          className="mx-auto mt-12 md:mt-20 grid max-w-2xl grid-cols-1 gap-x-6 md:gap-x-8 gap-y-12 md:gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-          viewport={{ once: true }}
-        >
-          {pastors.map((pastor, index) => (
-            <motion.li
-              key={pastor.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.4,
-                delay: index * 0.03,
-                ease: "easeOut",
-              }}
-              viewport={{ once: true }}
-              whileHover={{ y: -2 }}
-              className="group"
-            >
-              <div className="relative overflow-hidden rounded-xl md:rounded-2xl border-2 border-red-200">
-                <img
-                  alt={pastor.name}
-                  src={pastor.imageUrl}
-                  className="aspect-3/2 w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
+        {loading ? (
+          <motion.div
+            className="mx-auto mt-12 md:mt-20 grid max-w-2xl grid-cols-1 gap-x-6 md:gap-x-8 gap-y-12 md:gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-3/2 w-full bg-gray-200 rounded-xl md:rounded-2xl mb-4"></div>
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-2/3"></div>
               </div>
+            ))}
+          </motion.div>
+        ) : pastors.length > 0 ? (
+          <motion.ul
+            role="list"
+            className="mx-auto mt-12 md:mt-20 grid max-w-2xl grid-cols-1 gap-x-6 md:gap-x-8 gap-y-12 md:gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            {pastors.map((pastor: Pastor, index: number) => (
+              <motion.li
+                key={pastor.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.4,
+                  delay: index * 0.03,
+                  ease: "easeOut",
+                }}
+                viewport={{ once: true }}
+                whileHover={{ y: -2 }}
+                className="group"
+              >
+                <div className="relative overflow-hidden rounded-xl md:rounded-2xl border-2 border-red-200">
+                  <img
+                    alt={pastor.name}
+                    src={pastor.imageUrl}
+                    className="aspect-3/2 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
 
-              <h3 className="mt-4 md:mt-6 text-base md:text-lg/8 font-semibold tracking-tight text-gray-900 group-hover:text-red-600 transition-colors duration-200">
-                {pastor.name}
+                <h3 className="mt-4 md:mt-6 text-base md:text-lg/8 font-semibold tracking-tight text-gray-900 group-hover:text-red-600 transition-colors duration-200">
+                  {pastor.name}
+                </h3>
+                <p className="text-sm md:text-base/7 text-gray-600">
+                  {pastor.role}
+                </p>
+              </motion.li>
+            ))}
+          </motion.ul>
+        ) : (
+          <motion.div
+            className="mx-auto mt-12 md:mt-20 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl p-8 md:p-12 border-2 border-gray-200">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                <Star className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-xl md:text-2xl font-semibold text-gray-700 mb-2">
+                No Pastors Added Yet
               </h3>
-              <p className="text-sm md:text-base/7 text-gray-600">
-                {pastor.role}
+              <p className="text-gray-500 text-sm md:text-base">
+                Our pastoral team information will be displayed here once added
+                to the system.
               </p>
-            </motion.li>
-          ))}
-        </motion.ul>
+            </div>
+          </motion.div>
+        )}
       </Container>
     </section>
   );
