@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { NavigationProvider } from "@/components/providers/navigation-provider";
 import { SplashScreenProvider } from "@/components/providers/splash-screen-provider";
+import { SupabaseProvider } from "@/components/providers/supabase-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -160,9 +161,11 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <NavigationProvider>
-          <SplashScreenProvider>{children}</SplashScreenProvider>
-        </NavigationProvider>
+        <SupabaseProvider>
+          <NavigationProvider>
+            <SplashScreenProvider>{children}</SplashScreenProvider>
+          </NavigationProvider>
+        </SupabaseProvider>
       </body>
     </html>
   );

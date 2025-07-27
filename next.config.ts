@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
 
   // Experimental features for performance
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false, // Disable to avoid critters dependency issue
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
 

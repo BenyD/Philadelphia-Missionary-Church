@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
 import {
   Heart,
   Send,
@@ -51,17 +52,26 @@ export function PrayerRequestForm() {
     setSubmitStatus("idle");
 
     try {
-      const response = await fetch("/api/prayer-request", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("prayer_requests")
+        .insert([
+          {
+            full_name: formData.fullName,
+            phone_number: formData.phoneNumber || null,
+            email: formData.email,
+            prayer_request: formData.prayerRequest,
+            status: "pending", // Set initial status
+          },
+        ])
+        .select()
+        .single();
 
-      const result = await response.json();
-
-      if (response.ok && result.success) {
+      if (error) {
+        console.error("Supabase error:", error);
+        throw new Error(error.message);
+      } else {
+        console.log("Prayer request submitted successfully:", data);
         setSubmitStatus("success");
         setFormData({
           fullName: "",
@@ -69,8 +79,6 @@ export function PrayerRequestForm() {
           email: "",
           prayerRequest: "",
         });
-      } else {
-        throw new Error(result.error || "Failed to submit prayer request");
       }
     } catch (error) {
       console.error("Error submitting prayer request:", error);
@@ -218,8 +226,10 @@ export function PrayerRequestForm() {
                   </h3>
                   <p className="text-base md:text-lg lg:text-xl text-gray-600 mb-6 md:mb-8 max-w-2xl mx-auto px-4 lg:px-0">
                     Thank you for sharing your prayer request with us. Our
-                    prayer team will be praying for you. May God bless you and
-                    provide you with strength and peace.
+                    prayer team has been notified and will be praying for you.
+                    Your request has been sent to our admin dashboard where our
+                    team can track and manage it. May God bless you and provide
+                    you with strength and peace.
                   </p>
                   <Button
                     onClick={() => setSubmitStatus("idle")}
