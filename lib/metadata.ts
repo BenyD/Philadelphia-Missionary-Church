@@ -6,14 +6,17 @@ export const siteConfig = {
   url: "https://pmchurch.ch",
   ogImage: "/images/church-og.jpg",
   links: {
-    facebook: "https://www.facebook.com/pmchurch",
-    instagram: "https://www.instagram.com/pmchurch",
-    youtube: "https://www.youtube.com/pmchurch",
+    facebook: "https://www.facebook.com/pmcinternational.1989",
+    instagram: "https://www.instagram.com/pmc.international.official/",
   },
   contact: {
-    phone: "+41-XX-XXX-XXXX",
-    email: "info@pmchurch.ch",
-    address: "Switzerland",
+    email: "info@pmcinternational.ch",
+    address: {
+      street: "Sulgeneckstrasse 58",
+      city: "Bern",
+      postalCode: "3005",
+      country: "Switzerland",
+    },
   },
 };
 
@@ -81,7 +84,6 @@ export const defaultMetadata: Metadata = {
     description:
       "Join our welcoming community dedicated to spreading God's love and serving our neighbors.",
     images: [siteConfig.ogImage],
-    creator: "@pmcchurch",
   },
   robots: {
     index: true,
@@ -95,9 +97,10 @@ export const defaultMetadata: Metadata = {
     },
   },
   verification: {
-    google: "your-google-verification-code",
-    yandex: "your-yandex-verification-code",
-    yahoo: "your-yahoo-verification-code",
+    // Add actual verification codes when available
+    // google: "your-google-verification-code",
+    // yandex: "your-yandex-verification-code",
+    // yahoo: "your-yahoo-verification-code",
   },
   category: "religion",
 };
@@ -161,9 +164,11 @@ export const structuredData = {
     image: `${siteConfig.url}/images/church-building.jpg`,
     address: {
       "@type": "PostalAddress",
+      streetAddress: siteConfig.contact.address.street,
+      addressLocality: siteConfig.contact.address.city,
+      postalCode: siteConfig.contact.address.postalCode,
       addressCountry: "CH",
     },
-    telephone: siteConfig.contact.phone,
     email: siteConfig.contact.email,
     openingHours: "Su 09:00-12:00",
     serviceType: "Christian Worship Service",
@@ -212,4 +217,3 @@ export const structuredData = {
     },
   }),
 };
- 
