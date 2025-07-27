@@ -24,6 +24,7 @@ export function Footer() {
         { name: "Gallery", href: "/gallery" },
         { name: "Locations", href: "/locations" },
         { name: "Prayer Request", href: "/prayer-request" },
+        { name: "Admin", href: "/admin" },
       ],
     },
     {

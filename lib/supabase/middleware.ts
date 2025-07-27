@@ -56,5 +56,15 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // If user is authenticated and accessing /admin directly, redirect to dashboard
+  if (
+    user &&
+    request.nextUrl.pathname === '/admin'
+  ) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin/dashboard'
+    return NextResponse.redirect(url)
+  }
+
   return supabaseResponse
 } 

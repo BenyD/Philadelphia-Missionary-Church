@@ -1,7 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Clock, Star } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  Clock,
+  Star,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export interface EventCardProps {
   id: string;
@@ -12,6 +21,7 @@ export interface EventCardProps {
   description: string;
   category: string;
   isFeatured?: boolean;
+  status?: "active" | "cancelled" | "postponed";
 }
 
 export function EventCard({
@@ -22,7 +32,30 @@ export function EventCard({
   description,
   category,
   isFeatured = false,
+  status = "active",
 }: EventCardProps) {
+  const getStatusBadge = (status: string) => {
+    const statusConfig = {
+      active: { color: "bg-green-100 text-green-800", icon: CheckCircle },
+      cancelled: { color: "bg-red-100 text-red-800", icon: XCircle },
+      postponed: {
+        color: "bg-yellow-100 text-yellow-800",
+        icon: AlertTriangle,
+      },
+    };
+
+    const config =
+      statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
+    const IconComponent = config.icon;
+
+    return (
+      <Badge className={config.color}>
+        <IconComponent className="w-3 h-3 mr-1" />
+        {status.toUpperCase()}
+      </Badge>
+    );
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -32,19 +65,30 @@ export function EventCard({
         ease: "easeOut",
       }}
       viewport={{ once: true }}
-      whileHover={{ y: -2 }}
-      className="group"
+      whileHover={{ y: status === "active" ? -2 : 0 }}
+      className={`group ${status !== "active" ? "opacity-75" : ""}`}
     >
-      <div className="bg-white/70 backdrop-blur-md rounded-2xl overflow-hidden border-2 border-red-200 transition-all duration-200 h-full">
+      <div
+        className={`bg-white/70 backdrop-blur-md rounded-2xl overflow-hidden border-2 transition-all duration-200 h-full ${
+          status === "active"
+            ? "border-red-200 hover:border-red-300"
+            : status === "cancelled"
+            ? "border-red-300 border-dashed"
+            : "border-yellow-300 border-dashed"
+        }`}
+      >
         {/* Event Content */}
         <div className="p-6 space-y-4 h-full flex flex-col">
-          {/* Category Badge */}
+          {/* Badges Row */}
           <div className="flex items-center justify-between">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-red-50 to-blue-50 rounded-full border border-red-100">
-              <Star className="h-3 w-3 text-red-500" />
-              <span className="text-xs font-medium text-gray-600">
-                {category}
-              </span>
+            <div className="flex items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-red-50 to-blue-50 rounded-full border border-red-100">
+                <Star className="h-3 w-3 text-red-500" />
+                <span className="text-xs font-medium text-gray-600">
+                  {category}
+                </span>
+              </div>
+              {getStatusBadge(status)}
             </div>
             {isFeatured && (
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-red-500 to-red-600 rounded-full">
@@ -53,7 +97,15 @@ export function EventCard({
             )}
           </div>
 
-          <h3 className="text-xl font-bold text-gray-800 group-hover:text-red-600 transition-colors duration-200">
+          <h3
+            className={`text-xl font-bold transition-colors duration-200 ${
+              status === "active"
+                ? "text-gray-800 group-hover:text-red-600"
+                : status === "cancelled"
+                ? "text-gray-500 line-through"
+                : "text-gray-600 italic"
+            }`}
+          >
             {title}
           </h3>
 

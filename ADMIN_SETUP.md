@@ -32,7 +32,9 @@ SUPABASE_SERVICE_ROLE_KEY=your_actual_service_role_key_here
 
 ### 2. Database Setup
 
-The database migration has already been applied. The `prayer_requests` table has been created with the following structure:
+The database migrations have already been applied. Two tables have been created:
+
+**1. `prayer_requests` table:**
 
 - `id` - Unique identifier (UUID)
 - `full_name` - Requester's full name
@@ -43,6 +45,20 @@ The database migration has already been applied. The `prayer_requests` table has
 - `created_at` - Timestamp when created
 - `updated_at` - Timestamp when last updated
 - `admin_notes` - Admin notes (optional)
+
+**2. `events` table:**
+
+- `id` - Unique identifier (UUID)
+- `title` - Event title
+- `description` - Event description
+- `date` - Event date
+- `time` - Event time
+- `location` - Event location
+- `image_url` - Optional image URL
+- `is_featured` - Whether the event is featured
+- `status` - Event status: active, cancelled, postponed
+- `created_at` - Timestamp when created
+- `updated_at` - Timestamp when last updated
 
 ### 3. Create Admin Users
 
@@ -62,9 +78,17 @@ The database migration has already been applied. The `prayer_requests` table has
 
 The database has RLS enabled with the following policies:
 
+**Prayer Requests:**
+
 - Authenticated users can read all prayer requests
 - Authenticated users can update prayer requests
 - Only authenticated users can access the data
+
+**Events:**
+
+- Public users can read active events only
+- Authenticated users can read all events (including cancelled/postponed)
+- Authenticated users can create, update, and delete events
 
 ### 5. Running the Application
 
@@ -83,7 +107,9 @@ The admin dashboard will be available at:
 
 - **Authentication**: Secure login with Supabase Auth
 - **Prayer Request Management**: View, update, and manage prayer requests
+- **Events Management**: Create, edit, and manage church events
 - **Status Tracking**: Track requests as pending, in progress, completed, or archived
+- **Event Status**: Manage events as active, cancelled, or postponed
 - **Admin Notes**: Add internal notes to prayer requests
 - **Real-time Updates**: See changes immediately
 
@@ -93,6 +119,14 @@ The admin dashboard will be available at:
 - **Direct Database Storage**: Requests are saved directly to Supabase
 - **Form Validation**: Client-side validation for required fields
 - **Success/Error Handling**: Clear feedback to users
+
+### Events System
+
+- **Public Events Page**: Available at `/events`
+- **Upcoming Events**: Displayed on homepage
+- **API Integration**: Events are fetched from Supabase via API
+- **Live Updates**: Events created in admin appear immediately on public pages
+- **Featured Events**: Mark events as featured for special display
 
 ## Security
 
@@ -124,10 +158,10 @@ The service role key (`SUPABASE_SERVICE_ROLE_KEY`) bypasses Row Level Security a
 
 ### For Admins
 
-1. Log in at `/admin/login`
-2. View all prayer requests on the dashboard
-3. Click "View" to see request details
-4. Update status and add admin notes
+1. Log in at `/login`
+2. View all prayer requests and events on the dashboard
+3. **Prayer Requests**: Click "View" to see request details, update status and add admin notes
+4. **Events**: Click "Create Event" to add new events, or "Edit" to modify existing ones
 5. Save changes to track progress
 
 ### For Visitors
@@ -176,3 +210,4 @@ Consider adding these features in the future:
 - User management for multiple admins
 - Analytics and reporting
 - Bulk operations for prayer requests
+ 

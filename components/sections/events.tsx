@@ -14,8 +14,8 @@ interface Event {
   date: string;
   time: string;
   location: string;
-  image_url?: string;
   is_featured: boolean;
+  status: "active" | "cancelled" | "postponed";
   created_at: string;
   updated_at: string;
 }
@@ -25,7 +25,11 @@ const emptyEvents: Event[] = [];
 
 export function Events() {
   const [events, setEvents] = useState<Event[]>(emptyEvents);
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>(emptyEvents);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "cancelled" | "postponed"
+  >("all");
   const [stats, setStats] = useState({
     totalEvents: 0,
     featuredEvents: 0,
@@ -67,6 +71,17 @@ export function Events() {
 
     fetchEvents();
   }, []);
+
+  // Filter events based on status
+  useEffect(() => {
+    if (statusFilter === "all") {
+      setFilteredEvents(events);
+    } else {
+      setFilteredEvents(
+        events.filter((event) => event.status === statusFilter)
+      );
+    }
+  }, [events, statusFilter]);
 
   return (
     <section className="relative pt-20 pb-12 md:pt-20 md:pb-16 lg:pt-24 lg:pb-24 overflow-hidden">
@@ -178,6 +193,64 @@ export function Events() {
           </div>
         </motion.div>
 
+        {/* Status Filter */}
+        {!loading && events.length > 0 && (
+          <motion.div
+            className="flex flex-wrap items-center justify-center gap-3 mb-8 md:mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+          >
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm font-medium text-gray-600">
+                Filter by status:
+              </span>
+              <span className="text-xs text-gray-500">
+                Showing {filteredEvents.length} of {events.length} events
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                {
+                  value: "all",
+                  label: "All Events",
+                  color: "bg-gray-100 text-gray-700 hover:bg-gray-200",
+                },
+                {
+                  value: "active",
+                  label: "Active",
+                  color: "bg-green-100 text-green-700 hover:bg-green-200",
+                },
+                {
+                  value: "cancelled",
+                  label: "Cancelled",
+                  color: "bg-red-100 text-red-700 hover:bg-red-200",
+                },
+                {
+                  value: "postponed",
+                  label: "Postponed",
+                  color: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200",
+                },
+              ].map((filter) => (
+                <button
+                  key={filter.value}
+                  onClick={() => setStatusFilter(filter.value as any)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    statusFilter === filter.value
+                      ? filter.color
+                          .replace("hover:", "")
+                          .replace("100", "200")
+                          .replace("700", "800")
+                      : filter.color
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
         {/* Events Grid */}
         {loading ? (
           <motion.div
@@ -201,24 +274,36 @@ export function Events() {
               </div>
             ))}
           </motion.div>
-        ) : events.length > 0 ? (
+        ) : filteredEvents.length > 0 ? (
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
           >
-            {events.map((event) => (
+            {filteredEvents.map((event) => (
               <EventCard
                 key={event.id}
                 id={event.id}
                 title={event.title}
-                date={event.date}
-                time={event.time}
+                date={new Date(event.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+                time={new Date(`2000-01-01T${event.time}`).toLocaleTimeString(
+                  "en-US",
+                  {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  }
+                )}
                 location={event.location}
                 description={event.description}
                 category="Event"
                 isFeatured={event.is_featured}
+                status={event.status}
               />
             ))}
           </motion.div>
@@ -253,7 +338,11 @@ export function Events() {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4"
                 >
-                  Events Coming Soon
+                  {events.length === 0
+                    ? "Events Coming Soon"
+                    : `No ${
+                        statusFilter === "all" ? "" : statusFilter
+                      } Events Found`}
                 </motion.h3>
 
                 {/* Description */}
@@ -263,9 +352,11 @@ export function Events() {
                   transition={{ duration: 0.5, delay: 0.3 }}
                   className="text-gray-600 text-base md:text-lg mb-8 leading-relaxed max-w-2xl mx-auto"
                 >
-                  We're planning exciting events and activities for our church
-                  community. Stay tuned for worship services, fellowship
-                  gatherings, and ministry opportunities.
+                  {events.length === 0
+                    ? "We're planning exciting events and activities for our church community. Stay tuned for worship services, fellowship gatherings, and ministry opportunities."
+                    : `No ${
+                        statusFilter === "all" ? "" : statusFilter
+                      } events match your current filter. Try selecting a different status or view all events.`}
                 </motion.p>
 
                 {/* Feature List */}

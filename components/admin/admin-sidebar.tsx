@@ -21,7 +21,14 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Shield, LogOut, Home, MessageSquare } from "lucide-react";
+import {
+  Shield,
+  LogOut,
+  Home,
+  MessageSquare,
+  Calendar,
+  ExternalLink,
+} from "lucide-react";
 
 export function AdminSidebar() {
   const router = useRouter();
@@ -49,6 +56,11 @@ export function AdminSidebar() {
       title: "Prayer Requests",
       icon: MessageSquare,
       href: "/admin/prayer-requests",
+    },
+    {
+      title: "Events",
+      icon: Calendar,
+      href: "/admin/events",
     },
   ];
 
@@ -102,6 +114,18 @@ export function AdminSidebar() {
 
       <SidebarFooter className="border-t p-4">
         <div className="space-y-3">
+          {/* Back to Website Button */}
+          <Button
+            variant="ghost"
+            onClick={() => window.open("/", "_blank")}
+            className="w-full justify-center gap-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+          >
+            <ExternalLink className="h-4 w-4" />
+            <span>Back to Website</span>
+          </Button>
+
+          <Separator />
+
           {/* User Info */}
           <div className="flex items-center gap-2 px-2 py-1">
             <div className="flex-1 min-w-0">

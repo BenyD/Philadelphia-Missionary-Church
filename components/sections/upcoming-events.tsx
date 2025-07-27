@@ -15,8 +15,8 @@ interface Event {
   date: string;
   time: string;
   location: string;
-  image_url?: string;
   is_featured: boolean;
+  status: "active" | "cancelled" | "postponed";
   created_at: string;
   updated_at: string;
 }
@@ -31,12 +31,22 @@ export function UpcomingEvents() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
+        console.log("Fetching upcoming events...");
         const response = await fetch("/api/events?upcoming=true&limit=3");
+        console.log("Response status:", response.status);
+
         if (response.ok) {
           const data = await response.json();
+          console.log("Events data:", data);
           if (data.events && data.events.length > 0) {
             setEvents(data.events);
+            console.log("Set events:", data.events.length);
+          } else {
+            console.log("No events found");
           }
+        } else {
+          const errorData = await response.json();
+          console.error("API Error:", errorData);
         }
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -131,12 +141,24 @@ export function UpcomingEvents() {
                 key={event.id}
                 id={event.id}
                 title={event.title}
-                date={event.date}
-                time={event.time}
+                date={new Date(event.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+                time={new Date(`2000-01-01T${event.time}`).toLocaleTimeString(
+                  "en-US",
+                  {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  }
+                )}
                 location={event.location}
                 description={event.description}
                 category="Event"
                 isFeatured={event.is_featured}
+                status={event.status}
               />
             ))}
           </motion.div>

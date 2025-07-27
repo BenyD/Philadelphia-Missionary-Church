@@ -15,6 +15,7 @@ import {
   TrendingUp,
   Activity,
   MessageSquare,
+  Calendar,
 } from "lucide-react";
 
 export default async function AdminDashboard() {
@@ -41,6 +42,14 @@ export default async function AdminDashboard() {
   const recentRequests =
     prayerRequests?.filter((req) => new Date(req.created_at) > lastWeek)
       .length || 0;
+
+  // Fetch events for dashboard
+  const { data: events } = await supabase
+    .from("events")
+    .select("*")
+    .order("date", { ascending: false });
+
+  const totalEvents = events?.length || 0;
 
   return (
     <div className="p-6 space-y-6 w-full max-w-none">
@@ -181,7 +190,7 @@ export default async function AdminDashboard() {
           <CardDescription>Common tasks and shortcuts</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <a
               href="/admin/prayer-requests"
               className="p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer block"
@@ -194,9 +203,22 @@ export default async function AdminDashboard() {
                 {pendingRequests} pending
               </p>
             </a>
+            <a
+              href="/admin/events"
+              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer block"
+            >
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-5 h-5 text-red-600" />
+                <span className="font-medium">Manage Events</span>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                {totalEvents} total events
+              </p>
+            </a>
           </div>
         </CardContent>
       </Card>
     </div>
   );
 }
+ 
