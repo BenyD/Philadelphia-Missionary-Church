@@ -16,6 +16,7 @@ import {
   Activity,
   MessageSquare,
   Calendar,
+  MapPin,
 } from "lucide-react";
 
 export default async function AdminDashboard() {
@@ -50,6 +51,24 @@ export default async function AdminDashboard() {
     .order("date", { ascending: false });
 
   const totalEvents = events?.length || 0;
+
+  // Fetch pastors for dashboard
+  const { data: pastors } = await supabase
+    .from("pastors")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  const totalPastors = pastors?.length || 0;
+
+  // Fetch locations for dashboard
+  const { data: locations } = await supabase
+    .from("locations")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  const totalLocations = locations?.length || 0;
 
   return (
     <div className="p-6 space-y-6 w-full max-w-none">
@@ -190,7 +209,7 @@ export default async function AdminDashboard() {
           <CardDescription>Common tasks and shortcuts</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <a
               href="/admin/prayer-requests"
               className="p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer block"
@@ -215,10 +234,33 @@ export default async function AdminDashboard() {
                 {totalEvents} total events
               </p>
             </a>
+            <a
+              href="/admin/pastors"
+              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer block"
+            >
+              <div className="flex items-center space-x-2">
+                <Users className="w-5 h-5 text-red-600" />
+                <span className="font-medium">Manage Pastors</span>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                {totalPastors} active pastors
+              </p>
+            </a>
+            <a
+              href="/admin/locations"
+              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer block"
+            >
+              <div className="flex items-center space-x-2">
+                <MapPin className="w-5 h-5 text-red-600" />
+                <span className="font-medium">Manage Locations</span>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                {totalLocations} active locations
+              </p>
+            </a>
           </div>
         </CardContent>
       </Card>
     </div>
   );
 }
- 

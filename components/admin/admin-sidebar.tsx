@@ -28,6 +28,8 @@ import {
   MessageSquare,
   Calendar,
   ExternalLink,
+  Users,
+  MapPin,
 } from "lucide-react";
 
 export function AdminSidebar() {
@@ -73,6 +75,24 @@ export function AdminSidebar() {
       bgColor: "bg-green-50",
       textColor: "text-green-700",
       hoverBg: "hover:bg-green-100",
+    },
+    {
+      title: "Pastors",
+      icon: Users,
+      href: "/admin/pastors",
+      color: "from-orange-500 to-orange-600",
+      bgColor: "bg-orange-50",
+      textColor: "text-orange-700",
+      hoverBg: "hover:bg-orange-100",
+    },
+    {
+      title: "Locations",
+      icon: MapPin,
+      href: "/admin/locations",
+      color: "from-indigo-500 to-indigo-600",
+      bgColor: "bg-indigo-50",
+      textColor: "text-indigo-700",
+      hoverBg: "hover:bg-indigo-100",
     },
   ];
 

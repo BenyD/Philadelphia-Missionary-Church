@@ -4,6 +4,7 @@ import "./globals.css";
 import { NavigationProvider } from "@/components/providers/navigation-provider";
 import { SplashScreenProvider } from "@/components/providers/splash-screen-provider";
 import { SupabaseProvider } from "@/components/providers/supabase-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -165,6 +166,7 @@ export default function RootLayout({
           <NavigationProvider>
             <SplashScreenProvider>{children}</SplashScreenProvider>
           </NavigationProvider>
+          <Toaster />
         </SupabaseProvider>
       </body>
     </html>

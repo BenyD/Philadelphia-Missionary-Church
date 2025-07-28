@@ -70,7 +70,7 @@ export class EmailService {
         to: [data.email],
         subject: template.subject,
         html: template.html,
-        replyTo: 'prayer@philadelphiamissionarychurch.com',
+        reply_to: 'prayer@philadelphiamissionarychurch.com',
       });
 
       console.log('Reply email sent to user:', result);

@@ -37,6 +37,7 @@ import {
   Archive,
   Send,
 } from "lucide-react";
+import { toast } from "sonner";
 import { replyTemplates } from "@/lib/email/templates";
 
 interface PrayerRequest {
@@ -171,17 +172,17 @@ export function PrayerRequestsTable({
       });
 
       if (response.ok) {
-        alert("Reply sent successfully!");
+        toast.success("Reply sent successfully!");
         setIsReplyDialogOpen(false);
         setReplyMessage("");
         setSelectedTemplate("");
       } else {
         const error = await response.json();
-        alert(`Failed to send reply: ${error.error}`);
+        toast.error(`Failed to send reply: ${error.error}`);
       }
     } catch (error) {
       console.error("Error sending reply:", error);
-      alert("Failed to send reply. Please try again.");
+      toast.error("Failed to send reply. Please try again.");
     } finally {
       setIsSendingReply(false);
     }

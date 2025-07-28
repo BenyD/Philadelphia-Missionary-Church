@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { toast } from "sonner";
 import {
   Eye,
   Edit,
@@ -169,23 +170,23 @@ export function EventsTable({ events }: EventsTableProps) {
   const handleSubmit = async () => {
     // Validate required fields
     if (!formData.title.trim()) {
-      alert("Please enter an event title.");
+      toast.error("Please enter an event title.");
       return;
     }
     if (!formData.description.trim()) {
-      alert("Please enter an event description.");
+      toast.error("Please enter an event description.");
       return;
     }
     if (!formData.date) {
-      alert("Please select an event date.");
+      toast.error("Please select an event date.");
       return;
     }
     if (!formData.time) {
-      alert("Please select an event time.");
+      toast.error("Please select an event time.");
       return;
     }
     if (!formData.location.trim()) {
-      alert("Please enter an event location.");
+      toast.error("Please enter an event location.");
       return;
     }
 
@@ -213,9 +214,10 @@ export function EventsTable({ events }: EventsTableProps) {
 
       if (error) {
         console.error("Error creating event:", error);
-        alert("Failed to create event. Please try again.");
+        toast.error("Failed to create event. Please try again.");
       } else {
         console.log("Event created successfully");
+        toast.success("Event created successfully!");
         setIsDialogOpen(false);
         // Reset form data
         setFormData({
@@ -232,7 +234,7 @@ export function EventsTable({ events }: EventsTableProps) {
       }
     } catch (error) {
       console.error("Error creating event:", error);
-      alert("Failed to create event. Please try again.");
+      toast.error("Failed to create event. Please try again.");
     } finally {
       setIsUpdating(false);
     }
@@ -261,9 +263,10 @@ export function EventsTable({ events }: EventsTableProps) {
 
       if (error) {
         console.error("Error updating event:", error);
-        alert("Failed to update event. Please try again.");
+        toast.error("Failed to update event. Please try again.");
       } else {
         console.log("Event updated successfully");
+        toast.success("Event updated successfully!");
         setIsDialogOpen(false);
         // Reset selected event
         setSelectedEvent(null);
@@ -272,7 +275,7 @@ export function EventsTable({ events }: EventsTableProps) {
       }
     } catch (error) {
       console.error("Error updating event:", error);
-      alert("Failed to update event. Please try again.");
+      toast.error("Failed to update event. Please try again.");
     } finally {
       setIsUpdating(false);
     }
@@ -295,14 +298,14 @@ export function EventsTable({ events }: EventsTableProps) {
 
       if (error) {
         console.error("Error deleting event:", error);
-        alert("Failed to delete event. Please try again.");
+        toast.error("Failed to delete event. Please try again.");
       } else {
-        alert("Event deleted successfully!");
+        toast.success("Event deleted successfully!");
         window.location.reload();
       }
     } catch (error) {
       console.error("Error deleting event:", error);
-      alert("Failed to delete event. Please try again.");
+      toast.error("Failed to delete event. Please try again.");
     } finally {
       setDeletingEventId(null);
       setDeleteDialogOpen(false);
@@ -312,222 +315,384 @@ export function EventsTable({ events }: EventsTableProps) {
 
   if (events.length === 0) {
     return (
-      <div className="text-center py-16">
-        <div className="w-20 h-20 bg-gradient-to-br from-red-50 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <Calendar className="w-10 h-10 text-red-500" />
+      <>
+        <div className="text-center py-16">
+          <div className="w-20 h-20 bg-gradient-to-br from-red-50 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CalendarIcon className="w-10 h-10 text-red-500" />
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+            No Events Found
+          </h3>
+          <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
+            Get started by creating your first church event. Add services,
+            meetings, and special activities to keep your community informed.
+          </p>
+          <Button
+            onClick={handleCreateEvent}
+            className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Create Your First Event
+          </Button>
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-3">
-          No Events Found
-        </h3>
-        <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
-          Get started by creating your first church event. Add services,
-          meetings, and special activities to keep your community informed.
-        </p>
-        <Button
-          onClick={handleCreateEvent}
-          className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Create Your First Event
-        </Button>
-      </div>
+
+        {/* Create/Edit Event Dialog */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {isCreating ? "Create New Event" : "Edit Event"}
+              </DialogTitle>
+              <DialogDescription>
+                {isCreating
+                  ? "Add a new event to your church calendar."
+                  : "Update the event details."}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              {/* Event Title */}
+              <div>
+                <Label htmlFor="title">Event Title *</Label>
+                <Input
+                  id="title"
+                  value={formData.title}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
+                  placeholder="Enter event title"
+                />
+              </div>
+
+              {/* Event Description */}
+              <div>
+                <Label htmlFor="description">Description *</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
+                  placeholder="Enter event description"
+                  rows={3}
+                />
+              </div>
+
+              {/* Date and Time */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="date">Date *</Label>
+                  <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !formData.date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {formData.date ? (
+                          format(formData.date, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={formData.date}
+                        onSelect={(date) => {
+                          setFormData({ ...formData, date });
+                          setCalendarOpen(false);
+                        }}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div>
+                  <Label htmlFor="time">Time *</Label>
+                  <Input
+                    id="time"
+                    type="time"
+                    value={formData.time}
+                    onChange={(e) =>
+                      setFormData({ ...formData, time: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+
+              {/* Location */}
+              <div>
+                <Label htmlFor="location">Location *</Label>
+                <Input
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) =>
+                    setFormData({ ...formData, location: e.target.value })
+                  }
+                  placeholder="Enter event location"
+                />
+              </div>
+
+              {/* Featured and Status */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="featured"
+                    checked={formData.is_featured}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, is_featured: checked })
+                    }
+                  />
+                  <Label htmlFor="featured">Featured Event</Label>
+                </div>
+
+                <div>
+                  <Label htmlFor="status">Status</Label>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(
+                      value: "active" | "cancelled" | "postponed"
+                    ) => setFormData({ ...formData, status: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                      <SelectItem value="postponed">Postponed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSubmit}
+                  disabled={isUpdating}
+                  className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600"
+                >
+                  {isUpdating ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Saving...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4" />
+                      <span>
+                        {isCreating ? "Create Event" : "Update Event"}
+                      </span>
+                    </div>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the
+                event and remove it from your church calendar.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={confirmDelete}
+                disabled={deletingEventId !== null}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {deletingEventId ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Deleting...</span>
+                  </div>
+                ) : (
+                  "Delete Event"
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Events Management
-          </h2>
-          <p className="text-gray-600 mt-1">
-            Manage {events.length} event{events.length !== 1 ? "s" : ""} in your
-            church calendar
-          </p>
-        </div>
-        <Button
-          onClick={handleCreateEvent}
-          className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Create Event
-        </Button>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-blue-600">Total Events</p>
-              <p className="text-2xl font-bold text-blue-900">
-                {events.length}
-              </p>
-            </div>
-            <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-              <CalendarIcon className="w-5 h-5 text-white" />
-            </div>
+    <>
+      <div className="space-y-6">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Events Management
+            </h2>
+            <p className="text-gray-600 mt-1">
+              Manage {events.length} event{events.length !== 1 ? "s" : ""} in
+              your church calendar
+            </p>
           </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-green-600">
-                Active Events
-              </p>
-              <p className="text-2xl font-bold text-green-900">
-                {events.filter((e) => e.status === "active").length}
-              </p>
-            </div>
-            <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-white" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-4 border border-yellow-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-yellow-600">
-                Featured Events
-              </p>
-              <p className="text-2xl font-bold text-yellow-900">
-                {events.filter((e) => e.is_featured).length}
-              </p>
-            </div>
-            <div className="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
-              <Star className="w-5 h-5 text-white" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Events Grid */}
-      <div className="grid gap-6">
-        {events.map((event, index) => (
-          <motion.div
-            key={event.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
+          <Button
+            onClick={handleCreateEvent}
+            className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
           >
-            <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-gray-100 hover:border-red-200 bg-gradient-to-br from-white to-gray-50/50">
-              <CardContent className="p-6">
-                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                  {/* Event Content */}
-                  <div className="flex-1 space-y-4">
-                    {/* Header with Title and Badges */}
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-1">
-                          <h3 className="text-xl font-bold text-gray-900 group-hover:text-red-600 transition-colors duration-200">
-                            {event.title}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-2">
-                            {event.is_featured && (
-                              <div className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 rounded-full text-xs font-medium">
-                                <Star className="w-3 h-3 fill-current" />
-                                Featured
-                              </div>
-                            )}
-                            {getStatusBadge(event.status)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+            <Plus className="w-5 h-5 mr-2" />
+            Create Event
+          </Button>
+        </div>
 
-                    {/* Event Details */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                        <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                          <CalendarIcon className="w-4 h-4 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-medium text-blue-600">
-                            Date
-                          </p>
-                          <p className="text-sm font-semibold text-gray-900">
-                            {formatDate(event.date)}
-                          </p>
-                        </div>
-                      </div>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-blue-600">
+                  Total Events
+                </p>
+                <p className="text-2xl font-bold text-blue-900">
+                  {events.length}
+                </p>
+              </div>
+              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                <CalendarIcon className="w-5 h-5 text-white" />
+              </div>
+            </div>
+          </div>
 
-                      <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                        <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
-                          <Clock className="w-4 h-4 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-medium text-green-600">
-                            Time
-                          </p>
-                          <p className="text-sm font-semibold text-gray-900">
-                            {formatTime(event.time)}
-                          </p>
-                        </div>
-                      </div>
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-green-600">
+                  Active Events
+                </p>
+                <p className="text-2xl font-bold text-green-900">
+                  {events.filter((e) => e.status === "active").length}
+                </p>
+              </div>
+              <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-white" />
+              </div>
+            </div>
+          </div>
 
-                      <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-                        <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
-                          <MapPin className="w-4 h-4 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-medium text-purple-600">
-                            Location
-                          </p>
-                          <p className="text-sm font-semibold text-gray-900">
-                            {event.location}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-4 border border-yellow-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-yellow-600">
+                  Featured Events
+                </p>
+                <p className="text-2xl font-bold text-yellow-900">
+                  {events.filter((e) => e.is_featured).length}
+                </p>
+              </div>
+              <div className="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
+                <Star className="w-5 h-5 text-white" />
+              </div>
+            </div>
+          </div>
+        </div>
 
-                    {/* Description */}
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <p className="text-gray-700 leading-relaxed line-clamp-3">
+        {/* Events Grid */}
+        <div className="grid gap-6">
+          {events.map((event, index) => (
+            <motion.div
+              key={event.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+            >
+              <Card className="group hover:shadow-xl border-2 border-gray-200 bg-gradient-to-br from-white to-gray-50 transition-all duration-300">
+                <CardContent className="p-6">
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+                        {event.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">
                         {event.description}
                       </p>
                     </div>
+                    <div className="flex items-center gap-2">
+                      {getStatusBadge(event.status)}
+                      {event.is_featured && (
+                        <Badge className="bg-yellow-100 text-yellow-800">
+                          <Star className="w-3 h-3 mr-1" />
+                          Featured
+                        </Badge>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex flex-col sm:flex-row lg:flex-col gap-2 lg:min-w-[120px]">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEditEvent(event)}
-                      disabled={isUpdating}
-                      className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 transition-all duration-200"
-                    >
-                      <Edit className="w-4 h-4" />
-                      <span>Edit</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDeleteEvent(event)}
-                      disabled={deletingEventId === event.id}
-                      className="flex items-center justify-center gap-2 bg-white hover:bg-red-50 border-red-300 hover:border-red-400 text-red-600 hover:text-red-700 transition-all duration-200"
-                    >
-                      {deletingEventId === event.id ? (
-                        <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <Trash2 className="w-4 h-4" />
-                      )}
-                      <span>
-                        {deletingEventId === event.id
-                          ? "Deleting..."
-                          : "Delete"}
-                      </span>
-                    </Button>
+                  {/* Event Details */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <CalendarIcon className="w-4 h-4 text-blue-500" />
+                      <span className="font-medium">Date:</span>
+                      <span>{formatDate(event.date)}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Clock className="w-4 h-4 text-green-500" />
+                      <span className="font-medium">Time:</span>
+                      <span>{formatTime(event.time)}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <MapPin className="w-4 h-4 text-purple-500" />
+                      <span className="font-medium">Location:</span>
+                      <span>{event.location}</span>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                    <div className="text-xs text-gray-500">
+                      Updated {formatDate(event.updated_at)}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEditEvent(event)}
+                        className="text-red-600 border-red-200 hover:bg-red-50"
+                      >
+                        <Edit className="w-3 h-3 mr-1" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDeleteEvent(event)}
+                        className="text-red-600 border-red-200 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* Create/Edit Event Dialog */}
@@ -539,57 +704,43 @@ export function EventsTable({ events }: EventsTableProps) {
             </DialogTitle>
             <DialogDescription>
               {isCreating
-                ? "Add a new event to the church calendar"
-                : "Update event details"}
+                ? "Add a new event to your church calendar."
+                : "Update the event details."}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <Label
-                  htmlFor="title"
-                  className="text-sm font-semibold text-gray-700"
-                >
-                  Event Title *
-                </Label>
-                <Input
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
-                  }
-                  placeholder="Enter event title"
-                  className="w-full"
-                />
-              </div>
-              <div className="space-y-3">
-                <Label
-                  htmlFor="location"
-                  className="text-sm font-semibold text-gray-700"
-                >
-                  Location *
-                </Label>
-                <Input
-                  id="location"
-                  value={formData.location}
-                  onChange={(e) =>
-                    setFormData({ ...formData, location: e.target.value })
-                  }
-                  placeholder="Enter event location"
-                  className="w-full"
-                />
-              </div>
+          <div className="space-y-4">
+            {/* Event Title */}
+            <div>
+              <Label htmlFor="title">Event Title *</Label>
+              <Input
+                id="title"
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+                placeholder="Enter event title"
+              />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <Label
-                  htmlFor="date"
-                  className="text-sm font-semibold text-gray-700"
-                >
-                  Date *
-                </Label>
+            {/* Event Description */}
+            <div>
+              <Label htmlFor="description">Description *</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                placeholder="Enter event description"
+                rows={3}
+              />
+            </div>
+
+            {/* Date and Time */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="date">Date *</Label>
                 <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                   <PopoverTrigger asChild>
                     <Button
@@ -607,7 +758,7 @@ export function EventsTable({ events }: EventsTableProps) {
                       )}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent className="w-auto p-0">
                     <Calendar
                       mode="single"
                       selected={formData.date}
@@ -615,21 +766,14 @@ export function EventsTable({ events }: EventsTableProps) {
                         setFormData({ ...formData, date });
                         setCalendarOpen(false);
                       }}
-                      disabled={(date) =>
-                        date < new Date(new Date().setHours(0, 0, 0, 0))
-                      }
                       initialFocus
                     />
                   </PopoverContent>
                 </Popover>
               </div>
-              <div className="space-y-3">
-                <Label
-                  htmlFor="time"
-                  className="text-sm font-semibold text-gray-700"
-                >
-                  Time *
-                </Label>
+
+              <div>
+                <Label htmlFor="time">Time *</Label>
                 <Input
                   id="time"
                   type="time"
@@ -637,45 +781,45 @@ export function EventsTable({ events }: EventsTableProps) {
                   onChange={(e) =>
                     setFormData({ ...formData, time: e.target.value })
                   }
-                  className="w-full"
                 />
               </div>
             </div>
 
-            <div className="space-y-3">
-              <Label
-                htmlFor="description"
-                className="text-sm font-semibold text-gray-700"
-              >
-                Description *
-              </Label>
-              <Textarea
-                id="description"
-                value={formData.description}
+            {/* Location */}
+            <div>
+              <Label htmlFor="location">Location *</Label>
+              <Input
+                id="location"
+                value={formData.location}
                 onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
+                  setFormData({ ...formData, location: e.target.value })
                 }
-                placeholder="Enter event description"
-                rows={4}
-                className="w-full"
+                placeholder="Enter event location"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <Label
-                  htmlFor="status"
-                  className="text-sm font-semibold text-gray-700"
-                >
-                  Status
-                </Label>
+            {/* Featured and Status */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="featured"
+                  checked={formData.is_featured}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, is_featured: checked })
+                  }
+                />
+                <Label htmlFor="featured">Featured Event</Label>
+              </div>
+
+              <div>
+                <Label htmlFor="status">Status</Label>
                 <Select
                   value={formData.status}
                   onValueChange={(
                     value: "active" | "cancelled" | "postponed"
                   ) => setFormData({ ...formData, status: value })}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -685,43 +829,29 @@ export function EventsTable({ events }: EventsTableProps) {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700">
-                  Event Settings
-                </Label>
-                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <Switch
-                    id="featured"
-                    checked={formData.is_featured}
-                    onCheckedChange={(checked) =>
-                      setFormData({ ...formData, is_featured: checked })
-                    }
-                    className="data-[state=checked]:bg-red-600 data-[state=unchecked]:bg-gray-200"
-                  />
-                  <Label
-                    htmlFor="featured"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Featured Event
-                  </Label>
-                </div>
-              </div>
             </div>
 
-            <div className="flex justify-end space-x-3">
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-2 pt-4">
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
               <Button
                 onClick={handleSubmit}
                 disabled={isUpdating}
-                className="bg-red-600 hover:bg-red-700"
+                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600"
               >
-                {isUpdating
-                  ? "Saving..."
-                  : isCreating
-                  ? "Create Event"
-                  : "Update Event"}
+                {isUpdating ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Saving...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    <span>{isCreating ? "Create Event" : "Update Event"}</span>
+                  </div>
+                )}
               </Button>
             </div>
           </div>
@@ -735,20 +865,18 @@ export function EventsTable({ events }: EventsTableProps) {
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              event{" "}
-              <span className="font-semibold">"{eventToDelete?.title}"</span>{" "}
-              and remove it from the database.
+              event and remove it from your church calendar.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
-              disabled={deletingEventId === eventToDelete?.id}
-              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+              disabled={deletingEventId !== null}
+              className="bg-red-600 hover:bg-red-700"
             >
-              {deletingEventId === eventToDelete?.id ? (
-                <div className="flex items-center space-x-2">
+              {deletingEventId ? (
+                <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   <span>Deleting...</span>
                 </div>
@@ -759,6 +887,6 @@ export function EventsTable({ events }: EventsTableProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 }
