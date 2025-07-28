@@ -66,6 +66,7 @@ interface Event {
   time: string;
   location: string;
   is_featured: boolean;
+  is_active: boolean;
   status: "active" | "cancelled" | "postponed";
   created_at: string;
   updated_at: string;
@@ -91,6 +92,7 @@ export function EventsTable({ events }: EventsTableProps) {
     time: "",
     location: "",
     is_featured: false,
+    is_active: true,
     status: "active" as "active" | "cancelled" | "postponed",
   });
   const supabase = createClient();
@@ -148,6 +150,7 @@ export function EventsTable({ events }: EventsTableProps) {
       time: "",
       location: "",
       is_featured: false,
+      is_active: true,
       status: "active",
     });
     setIsDialogOpen(true);
@@ -162,6 +165,7 @@ export function EventsTable({ events }: EventsTableProps) {
       time: event.time,
       location: event.location,
       is_featured: event.is_featured,
+      is_active: event.is_active,
       status: event.status,
     });
     setIsDialogOpen(true);
@@ -227,6 +231,7 @@ export function EventsTable({ events }: EventsTableProps) {
           time: "",
           location: "",
           is_featured: false,
+          is_active: true,
           status: "active" as "active" | "cancelled" | "postponed",
         });
         // Refresh the page to show the new event
@@ -439,8 +444,8 @@ export function EventsTable({ events }: EventsTableProps) {
                 />
               </div>
 
-              {/* Featured and Status */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Featured, Active, and Status */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="featured"
@@ -450,6 +455,17 @@ export function EventsTable({ events }: EventsTableProps) {
                     }
                   />
                   <Label htmlFor="featured">Featured Event</Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="active"
+                    checked={formData.is_active}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, is_active: checked })
+                    }
+                  />
+                  <Label htmlFor="active">Active (Visible on website)</Label>
                 </div>
 
                 <div>

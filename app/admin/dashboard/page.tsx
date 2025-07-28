@@ -1,266 +1,135 @@
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { DashboardOverview } from "@/components/admin/dashboard-overview";
 import { DashboardStats } from "@/components/admin/dashboard-stats";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Shield,
-  Users,
-  Clock,
-  CheckCircle,
-  TrendingUp,
-  Activity,
-  MessageSquare,
-  Calendar,
-  MapPin,
-} from "lucide-react";
+import { DashboardQuickActions } from "@/components/admin/dashboard-quick-actions";
+import { DashboardRecentActivity } from "@/components/admin/dashboard-recent-activity";
+import { DashboardContentManagement } from "@/components/admin/dashboard-content-management";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
 
-  // Fetch prayer requests with status counts
-  const { data: prayerRequests } = await supabase
-    .from("prayer_requests")
-    .select("*")
-    .order("created_at", { ascending: false });
+  // Check authentication
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+  if (authError || !user) {
+    redirect("/login");
+  }
 
-  // Calculate stats
-  const totalRequests = prayerRequests?.length || 0;
-  const pendingRequests =
-    prayerRequests?.filter((req) => req.status === "pending").length || 0;
-  const inProgressRequests =
-    prayerRequests?.filter((req) => req.status === "in_progress").length || 0;
-  const completedRequests =
-    prayerRequests?.filter((req) => req.status === "completed").length || 0;
+  // Fetch all data for dashboard
+  const [
+    { data: prayerRequests },
+    { data: events },
+    { data: pastors },
+    { data: locations },
+    { data: galleryImages },
+    { data: recentPrayerRequests },
+    { data: upcomingEvents },
+    { data: activePastors },
+    { data: activeLocations },
+    { data: featuredGalleryImages },
+  ] = await Promise.all([
+    supabase.from("prayer_requests").select("*"),
+    supabase.from("events").select("*"),
+    supabase.from("pastors").select("*"),
+    supabase.from("locations").select("*"),
+    supabase.from("gallery_images").select("*"),
+    supabase
+      .from("prayer_requests")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(5),
+    supabase
+      .from("events")
+      .select("*")
+      .gte("date", new Date().toISOString().split("T")[0])
+      .order("date", { ascending: true })
+      .limit(3),
+    supabase.from("pastors").select("*").eq("is_active", true),
+    supabase.from("locations").select("*").eq("is_active", true),
+    supabase
+      .from("gallery_images")
+      .select("*")
+      .eq("is_featured", true)
+      .eq("is_active", true)
+      .limit(6),
+  ]);
 
-  // Calculate recent activity (last 7 days)
-  const lastWeek = new Date();
-  lastWeek.setDate(lastWeek.getDate() - 7);
-  const recentRequests =
-    prayerRequests?.filter((req) => new Date(req.created_at) > lastWeek)
-      .length || 0;
-
-  // Fetch events for dashboard
-  const { data: events } = await supabase
-    .from("events")
-    .select("*")
-    .order("date", { ascending: false });
-
-  const totalEvents = events?.length || 0;
-
-  // Fetch pastors for dashboard
-  const { data: pastors } = await supabase
-    .from("pastors")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true });
-
-  const totalPastors = pastors?.length || 0;
-
-  // Fetch locations for dashboard
-  const { data: locations } = await supabase
-    .from("locations")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true });
-
-  const totalLocations = locations?.length || 0;
+  // Calculate statistics
+  const stats = {
+    totalPrayerRequests: prayerRequests?.length || 0,
+    pendingPrayerRequests:
+      prayerRequests?.filter((req) => req.status === "pending").length || 0,
+    totalEvents: events?.length || 0,
+    upcomingEvents: upcomingEvents?.length || 0,
+    totalPastors: pastors?.length || 0,
+    activePastors: activePastors?.length || 0,
+    totalLocations: locations?.length || 0,
+    activeLocations: activeLocations?.length || 0,
+    totalGalleryImages: galleryImages?.length || 0,
+    featuredImages: featuredGalleryImages?.length || 0,
+    activeEvents: events?.filter((event) => event.is_active).length || 0,
+    archivedPrayerRequests:
+      prayerRequests?.filter((req) => req.is_archived).length || 0,
+  };
 
   return (
-    <div className="p-6 space-y-6 w-full max-w-none">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600 mt-1">
-            Overview of church administration and prayer request management
-          </p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Shield className="w-6 h-6 text-red-600" />
-          <span className="text-sm font-medium text-gray-700">Admin Panel</span>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <DashboardStats
-        totalRequests={totalRequests}
-        pendingRequests={pendingRequests}
-        inProgressRequests={inProgressRequests}
-        completedRequests={completedRequests}
-      />
-
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Activity className="w-5 h-5 text-red-600" />
-              <span>Recent Activity</span>
-            </CardTitle>
-            <CardDescription>
-              Prayer requests from the last 7 days
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-gray-900">
-              {recentRequests}
-            </div>
-            <p className="text-sm text-gray-500 mt-1">New requests this week</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <TrendingUp className="w-5 h-5 text-red-600" />
-              <span>Response Rate</span>
-            </CardTitle>
-            <CardDescription>
-              Percentage of prayer requests being handled
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-gray-900">
-              {totalRequests > 0
-                ? Math.round(
-                    ((totalRequests - pendingRequests) / totalRequests) * 100
-                  )
-                : 0}
-              %
-            </div>
-            <p className="text-sm text-gray-500 mt-1">
-              Requests being processed
+    <div className="p-6 space-y-8 w-full max-w-none">
+      {/* Welcome Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">
+              Welcome back, {user.email}
+            </h1>
+            <p className="text-blue-100">
+              Manage your church's digital presence and community engagement
             </p>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="text-right">
+            <div className="text-2xl font-bold">
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </div>
+            <div className="text-blue-100">
+              Last login: {new Date().toLocaleString()}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Recent Prayer Requests */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <MessageSquare className="w-5 h-5 text-red-600" />
-            <span>Recent Prayer Requests</span>
-          </CardTitle>
-          <CardDescription>
-            Latest prayer requests from the community
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {prayerRequests && prayerRequests.length > 0 ? (
-            <div className="space-y-4">
-              {prayerRequests.slice(0, 5).map((request) => (
-                <div
-                  key={request.id}
-                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-medium text-gray-900">
-                        {request.full_name}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {new Date(request.created_at).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                      {request.prayer_request}
-                    </p>
-                  </div>
-                  <div className="ml-4">
-                    <a
-                      href="/admin/prayer-requests"
-                      className="text-sm text-red-600 hover:text-red-700 font-medium"
-                    >
-                      View →
-                    </a>
-                  </div>
-                </div>
-              ))}
-              {prayerRequests.length > 5 && (
-                <div className="text-center pt-2">
-                  <a
-                    href="/admin/prayer-requests"
-                    className="text-sm text-red-600 hover:text-red-700 font-medium"
-                  >
-                    View all {prayerRequests.length} requests →
-                  </a>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">No prayer requests yet</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* Statistics Cards */}
+      <DashboardStats stats={stats} />
 
       {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>Common tasks and shortcuts</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <a
-              href="/admin/prayer-requests"
-              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer block"
-            >
-              <div className="flex items-center space-x-2">
-                <MessageSquare className="w-5 h-5 text-red-600" />
-                <span className="font-medium">View Prayer Requests</span>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">
-                {pendingRequests} pending
-              </p>
-            </a>
-            <a
-              href="/admin/events"
-              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer block"
-            >
-              <div className="flex items-center space-x-2">
-                <Calendar className="w-5 h-5 text-red-600" />
-                <span className="font-medium">Manage Events</span>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">
-                {totalEvents} total events
-              </p>
-            </a>
-            <a
-              href="/admin/pastors"
-              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer block"
-            >
-              <div className="flex items-center space-x-2">
-                <Users className="w-5 h-5 text-red-600" />
-                <span className="font-medium">Manage Pastors</span>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">
-                {totalPastors} active pastors
-              </p>
-            </a>
-            <a
-              href="/admin/locations"
-              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer block"
-            >
-              <div className="flex items-center space-x-2">
-                <MapPin className="w-5 h-5 text-red-600" />
-                <span className="font-medium">Manage Locations</span>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">
-                {totalLocations} active locations
-              </p>
-            </a>
-          </div>
-        </CardContent>
-      </Card>
+      <DashboardQuickActions />
+
+      {/* Content Management Grid */}
+      <DashboardContentManagement
+        prayerRequests={prayerRequests || []}
+        events={events || []}
+        pastors={pastors || []}
+        locations={locations || []}
+        galleryImages={galleryImages || []}
+      />
+
+      {/* Recent Activity & Overview */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <DashboardRecentActivity
+          recentPrayerRequests={recentPrayerRequests || []}
+          upcomingEvents={upcomingEvents || []}
+        />
+        <DashboardOverview
+          stats={stats}
+          featuredImages={featuredGalleryImages || []}
+        />
+      </div>
     </div>
   );
 }

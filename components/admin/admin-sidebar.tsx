@@ -30,6 +30,7 @@ import {
   ExternalLink,
   Users,
   MapPin,
+  Camera,
 } from "lucide-react";
 
 export function AdminSidebar() {
@@ -93,6 +94,15 @@ export function AdminSidebar() {
       bgColor: "bg-indigo-50",
       textColor: "text-indigo-700",
       hoverBg: "hover:bg-indigo-100",
+    },
+    {
+      title: "Gallery",
+      icon: Camera,
+      href: "/admin/gallery",
+      color: "from-purple-500 to-purple-600",
+      bgColor: "bg-purple-50",
+      textColor: "text-purple-700",
+      hoverBg: "hover:bg-purple-100",
     },
   ];
 

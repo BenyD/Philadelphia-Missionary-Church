@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import { emailTemplates } from './templates';
+import { getFromAddress, getAdminEmail, getReplyToAddress } from '@/lib/config/email';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -14,7 +15,7 @@ export class EmailService {
       const template = emailTemplates.userConfirmation(data);
       
       const result = await resend.emails.send({
-        from: 'Philadelphia Missionary Church <noreply@philadelphiamissionarychurch.com>',
+        from: getFromAddress('noreply'),
         to: [data.email],
         subject: template.subject,
         html: template.html,
@@ -37,11 +38,10 @@ export class EmailService {
   }) {
     try {
       const template = emailTemplates.adminNotification(data);
-      const adminEmail = process.env.ADMIN_EMAIL || 'admin@philadelphiamissionarychurch.com';
       
       const result = await resend.emails.send({
-        from: 'Philadelphia Missionary Church <noreply@philadelphiamissionarychurch.com>',
-        to: [adminEmail],
+        from: getFromAddress('noreply'),
+        to: [getAdminEmail()],
         subject: template.subject,
         html: template.html,
       });
@@ -66,11 +66,11 @@ export class EmailService {
       const template = emailTemplates.replyTemplate(data);
       
       const result = await resend.emails.send({
-        from: 'Philadelphia Missionary Church <prayer@philadelphiamissionarychurch.com>',
+        from: getFromAddress('prayer'),
         to: [data.email],
         subject: template.subject,
         html: template.html,
-        reply_to: 'prayer@philadelphiamissionarychurch.com',
+        reply_to: getReplyToAddress('prayer'),
       });
 
       console.log('Reply email sent to user:', result);
@@ -89,8 +89,6 @@ export class EmailService {
     requestId: string;
   }>) {
     try {
-      const adminEmail = process.env.ADMIN_EMAIL || 'admin@philadelphiamissionarychurch.com';
-      
       // Send individual notifications for each request
       const results = await Promise.allSettled(
         requests.map(request => this.sendAdminNotification(request))

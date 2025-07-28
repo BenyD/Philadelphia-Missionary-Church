@@ -296,6 +296,33 @@ export function LocationsTable({ locations }: LocationsTableProps) {
         setIsDialogOpen(false);
         window.location.reload();
       } else {
+        // Check if image was replaced
+        if (
+          selectedLocation &&
+          formData.image_url !== selectedLocation.image_url
+        ) {
+          // Delete old image from storage if it's from our bucket
+          if (
+            selectedLocation.image_url &&
+            selectedLocation.image_url.includes("location-images")
+          ) {
+            const oldFileName = selectedLocation.image_url.split("/").pop();
+            if (oldFileName) {
+              const { error: storageError } = await supabase.storage
+                .from("location-images")
+                .remove([oldFileName]);
+
+              if (storageError) {
+                console.error(
+                  "Error deleting old location image from storage:",
+                  storageError
+                );
+                // Continue with update even if storage deletion fails
+              }
+            }
+          }
+        }
+
         // Update location
         const { error: locationError } = await supabase
           .from("locations")
@@ -373,6 +400,28 @@ export function LocationsTable({ locations }: LocationsTableProps) {
 
     setDeletingLocationId(selectedLocation.id);
     try {
+      // Delete from storage bucket first
+      if (
+        selectedLocation.image_url &&
+        selectedLocation.image_url.includes("location-images")
+      ) {
+        const fileName = selectedLocation.image_url.split("/").pop();
+        if (fileName) {
+          const { error: storageError } = await supabase.storage
+            .from("location-images")
+            .remove([fileName]);
+
+          if (storageError) {
+            console.error(
+              "Error deleting location image from storage:",
+              storageError
+            );
+            // Continue with database deletion even if storage deletion fails
+          }
+        }
+      }
+
+      // Delete from database
       const { error } = await supabase
         .from("locations")
         .delete()
@@ -983,6 +1032,7 @@ export function LocationsTable({ locations }: LocationsTableProps) {
                 onChange={(url) => setFormData({ ...formData, image_url: url })}
                 label="Location Image"
                 placeholder="Upload a location image..."
+                uploadEndpoint="/api/upload/location-image"
               />
             </div>
 

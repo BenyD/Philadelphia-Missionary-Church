@@ -40,12 +40,12 @@ export function Logo({
 
   const variantClasses = {
     default: {
-      container: "bg-gradient-to-br from-blue-600 to-red-600",
+      container: "bg-white",
       text: "text-gray-800",
       subtitle: "text-gray-600",
     },
     white: {
-      container: "bg-gradient-to-br from-blue-500 to-red-500",
+      container: "bg-white",
       text: "text-white",
       subtitle: "text-gray-300",
     },
@@ -59,7 +59,7 @@ export function Logo({
       {/* Logo Container */}
       <div
         className={cn(
-          "relative rounded-lg flex items-center justify-center shadow-lg",
+          "relative rounded-lg flex items-center justify-center shadow-lg overflow-hidden",
           currentSize.container,
           currentVariant.container
         )}
@@ -70,7 +70,7 @@ export function Logo({
             src="/images/logo.png"
             alt="PMC Church Logo"
             fill
-            className="object-contain p-1"
+            className="object-cover"
             onError={(e) => {
               // Hide image on error and show fallback icon
               const target = e.currentTarget as HTMLImageElement;
@@ -82,7 +82,7 @@ export function Logo({
             }}
           />
           {/* Fallback Icon */}
-          <div className="hidden items-center justify-center w-full h-full">
+          <div className="hidden items-center justify-center w-full h-full bg-gradient-to-br from-blue-600 to-red-600">
             <Church className={cn("text-white", currentSize.icon)} />
           </div>
         </div>
@@ -91,7 +91,12 @@ export function Logo({
       {/* Text Content */}
       {showText && (
         <div className="flex flex-col">
-          <h1 className={cn("font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent", currentSize.text)}>
+          <h1
+            className={cn(
+              "font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent",
+              currentSize.text
+            )}
+          >
             Philadelphia Missionary Church
           </h1>
           <p

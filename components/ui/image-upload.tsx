@@ -13,6 +13,7 @@ interface ImageUploadProps {
   label?: string;
   placeholder?: string;
   className?: string;
+  uploadEndpoint?: string;
 }
 
 export function ImageUpload({
@@ -22,6 +23,7 @@ export function ImageUpload({
   label = "Image",
   placeholder = "Upload an image...",
   className = "",
+  uploadEndpoint = "/api/upload/pastor-image",
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -56,7 +58,7 @@ export function ImageUpload({
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch("/api/upload/pastor-image", {
+      const response = await fetch(uploadEndpoint, {
         method: "POST",
         body: formData,
       });

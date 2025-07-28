@@ -183,6 +183,30 @@ export function PastorsTable({ pastors }: PastorsTableProps) {
           window.location.reload();
         }
       } else {
+        // Check if image was replaced
+        if (selectedPastor && formData.image_url !== selectedPastor.image_url) {
+          // Delete old image from storage if it's from our bucket
+          if (
+            selectedPastor.image_url &&
+            selectedPastor.image_url.includes("pastor-images")
+          ) {
+            const oldFileName = selectedPastor.image_url.split("/").pop();
+            if (oldFileName) {
+              const { error: storageError } = await supabase.storage
+                .from("pastor-images")
+                .remove([oldFileName]);
+
+              if (storageError) {
+                console.error(
+                  "Error deleting old pastor image from storage:",
+                  storageError
+                );
+                // Continue with update even if storage deletion fails
+              }
+            }
+          }
+        }
+
         const { error } = await supabase
           .from("pastors")
           .update({
@@ -217,6 +241,28 @@ export function PastorsTable({ pastors }: PastorsTableProps) {
 
     setDeletingPastorId(selectedPastor.id);
     try {
+      // Delete from storage bucket first
+      if (
+        selectedPastor.image_url &&
+        selectedPastor.image_url.includes("pastor-images")
+      ) {
+        const fileName = selectedPastor.image_url.split("/").pop();
+        if (fileName) {
+          const { error: storageError } = await supabase.storage
+            .from("pastor-images")
+            .remove([fileName]);
+
+          if (storageError) {
+            console.error(
+              "Error deleting pastor image from storage:",
+              storageError
+            );
+            // Continue with database deletion even if storage deletion fails
+          }
+        }
+      }
+
+      // Delete from database
       const { error } = await supabase
         .from("pastors")
         .delete()
