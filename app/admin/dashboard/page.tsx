@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { DashboardOverview } from "@/components/admin/dashboard-overview";
 import { DashboardStats } from "@/components/admin/dashboard-stats";
-import { DashboardQuickActions } from "@/components/admin/dashboard-quick-actions";
 import { DashboardRecentActivity } from "@/components/admin/dashboard-recent-activity";
 import { DashboardContentManagement } from "@/components/admin/dashboard-content-management";
 
@@ -106,9 +105,6 @@ export default async function AdminDashboard() {
 
       {/* Statistics Cards */}
       <DashboardStats stats={stats} />
-
-      {/* Quick Actions */}
-      <DashboardQuickActions />
 
       {/* Content Management Grid */}
       <DashboardContentManagement
