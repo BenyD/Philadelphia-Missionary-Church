@@ -59,7 +59,7 @@ export function AboutUsContent() {
         >
           <div className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl group">
             <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80"
+              src="/images/about-hero.jpg"
               alt="Philadelphia Missionary Church"
               className="w-full h-64 sm:h-80 md:h-96 lg:h-[500px] object-cover group-hover:scale-105 transition-transform duration-700"
             />
@@ -162,7 +162,7 @@ export function AboutUsContent() {
               <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80"
+                  src="/images/about-church-gathering.jpg"
                   alt="Church gathering"
                   className="w-full h-64 sm:h-80 md:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
                 />
@@ -236,7 +236,7 @@ export function AboutUsContent() {
               <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-blue-500/20 to-red-500/20 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80"
+                  src="/images/about-growth.jpg"
                   alt="Church growth"
                   className="w-full h-64 sm:h-80 md:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
                 />
@@ -256,7 +256,7 @@ export function AboutUsContent() {
               <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80"
+                  src="/images/about-switzerland.jpg"
                   alt="Switzerland ministry"
                   className="w-full h-64 sm:h-80 md:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
                 />

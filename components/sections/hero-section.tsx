@@ -24,8 +24,7 @@ export function HeroSection() {
       subtitle: "Philadelphia Missionary Church",
       description:
         "From eleven believers to 10 vibrant churches across Switzerland, we continue to make disciples and share the love of Christ with as many people as possible.",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80",
+      image: "/images/hero-slide-1.jpg",
       badge: "Established 1989",
       icon: Award,
     },
@@ -34,8 +33,7 @@ export function HeroSection() {
       subtitle: "Across Switzerland",
       description:
         "With more than 400 believers and dedicated pastors and leaders, our church continues to make disciples and spread the message of salvation in Jesus Christ.",
-      image:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80",
+      image: "/images/hero-slide-2.jpg",
       badge: "34+ Years of Ministry",
       icon: Heart,
     },
@@ -44,8 +42,7 @@ export function HeroSection() {
       subtitle: "Revelation 3:8",
       description:
         "This promise has been our guiding light as we continue to grow and serve, knowing that God is opening doors for us to reach more people and make a lasting impact for His kingdom.",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80",
+      image: "/images/hero-slide-3.jpg",
       badge: "10 Churches Nationwide",
       icon: Globe,
     },

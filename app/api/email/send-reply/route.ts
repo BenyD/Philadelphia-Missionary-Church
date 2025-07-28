@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     // Send the reply email
     const emailResult = await EmailService.sendReplyToUser({
-      name: prayerRequest.name,
+      name: prayerRequest.full_name,
       email: prayerRequest.email,
       prayerRequest: prayerRequest.prayer_request,
       adminMessage,

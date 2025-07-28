@@ -88,7 +88,7 @@ export const emailTemplates = {
             .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
             .info-box { background: white; padding: 20px; border-left: 4px solid #1e40af; margin: 20px 0; border-radius: 5px; }
             .prayer-box { background: #f0f9ff; padding: 20px; border-left: 4px solid #0ea5e9; margin: 20px 0; border-radius: 5px; }
-            .action-btn { display: inline-block; background: #1e40af; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+            .action-btn { display: inline-block; background: #1e40af; color: white !important; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 10px 0; font-weight: 600; }
             .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
           </style>
         </head>
@@ -116,7 +116,7 @@ export const emailTemplates = {
                 "${data.prayerRequest}"
               </div>
               
-              <p><a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin/prayer-requests" class="action-btn">View in Admin Dashboard</a></p>
+              <p><a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin/prayer-requests" class="action-btn">Review Prayer Request</a></p>
               
               <p>Please review this request and take appropriate action.</p>
             </div>

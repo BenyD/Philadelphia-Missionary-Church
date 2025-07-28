@@ -25,18 +25,18 @@ export interface EmailConfig {
 // Default configuration
 const defaultConfig: EmailConfig = {
   from: {
-    noreply: 'Philadelphia Missionary Church <noreply@philadelphiamissionarychurch.com>',
-    prayer: 'Philadelphia Missionary Church <prayer@philadelphiamissionarychurch.com>',
+    noreply: 'Philadelphia Missionary Church <noreply@pmcinternational.ch>',
+    prayer: 'Philadelphia Missionary Church <prayer@pmcinternational.ch>',
   },
   to: {
-    admin: 'admin@philadelphiamissionarychurch.com',
+    admin: 'pmcwebdesign@gmail.com',
   },
   replyTo: {
-    prayer: 'prayer@philadelphiamissionarychurch.com',
+    prayer: 'prayer@pmcinternational.ch',
   },
   settings: {
     siteName: 'Philadelphia Missionary Church',
-    siteUrl: 'http://localhost:3000',
+    siteUrl: 'https://pmcinternational.ch',
   },
 };
 
