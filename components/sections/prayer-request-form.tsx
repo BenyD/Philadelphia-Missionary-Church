@@ -72,6 +72,55 @@ export function PrayerRequestForm() {
         throw new Error(error.message);
       } else {
         console.log("Prayer request submitted successfully:", data);
+
+        // Send confirmation email to user
+        try {
+          const emailResponse = await fetch("/api/email/send-confirmation", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: formData.fullName,
+              email: formData.email,
+              prayerRequest: formData.prayerRequest,
+              requestId: data.id,
+            }),
+          });
+
+          if (!emailResponse.ok) {
+            console.error("Failed to send confirmation email");
+          }
+        } catch (emailError) {
+          console.error("Error sending confirmation email:", emailError);
+        }
+
+        // Send admin notification
+        try {
+          const adminResponse = await fetch(
+            "/api/email/send-admin-notification",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                name: formData.fullName,
+                email: formData.email,
+                phone: formData.phoneNumber,
+                prayerRequest: formData.prayerRequest,
+                requestId: data.id,
+              }),
+            }
+          );
+
+          if (!adminResponse.ok) {
+            console.error("Failed to send admin notification");
+          }
+        } catch (adminError) {
+          console.error("Error sending admin notification:", adminError);
+        }
+
         setSubmitStatus("success");
         setFormData({
           fullName: "",

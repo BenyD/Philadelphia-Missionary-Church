@@ -35,7 +35,9 @@ import {
   Clock,
   AlertCircle,
   Archive,
+  Send,
 } from "lucide-react";
+import { replyTemplates } from "@/lib/email/templates";
 
 interface PrayerRequest {
   id: string;
@@ -64,6 +66,11 @@ export function PrayerRequestsTable({
   const [adminNotes, setAdminNotes] = useState("");
   const [status, setStatus] = useState<string>("");
   const [showArchived, setShowArchived] = useState(false);
+  const [isReplyDialogOpen, setIsReplyDialogOpen] = useState(false);
+  const [replyMessage, setReplyMessage] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("");
+  const [isSendingReply, setIsSendingReply] = useState(false);
+  const [adminName, setAdminName] = useState("Prayer Team");
   const supabase = createClient();
 
   const getStatusBadge = (status: string) => {
@@ -146,6 +153,48 @@ export function PrayerRequestsTable({
     }
   };
 
+  const handleReplyToUser = async () => {
+    if (!selectedRequest || !replyMessage.trim()) return;
+
+    setIsSendingReply(true);
+    try {
+      const response = await fetch("/api/email/send-reply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          requestId: selectedRequest.id,
+          adminMessage: replyMessage,
+          adminName: adminName,
+        }),
+      });
+
+      if (response.ok) {
+        alert("Reply sent successfully!");
+        setIsReplyDialogOpen(false);
+        setReplyMessage("");
+        setSelectedTemplate("");
+      } else {
+        const error = await response.json();
+        alert(`Failed to send reply: ${error.error}`);
+      }
+    } catch (error) {
+      console.error("Error sending reply:", error);
+      alert("Failed to send reply. Please try again.");
+    } finally {
+      setIsSendingReply(false);
+    }
+  };
+
+  const handleTemplateSelect = (templateId: string) => {
+    const template = replyTemplates.find((t) => t.id === templateId);
+    if (template) {
+      setReplyMessage(template.template);
+      setSelectedTemplate(templateId);
+    }
+  };
+
   if (prayerRequests.length === 0) {
     return (
       <div className="text-center py-16">
@@ -170,23 +219,73 @@ export function PrayerRequestsTable({
 
   if (filteredPrayerRequests.length === 0) {
     return (
-      <div className="text-center py-16">
-        <div className="w-20 h-20 bg-gradient-to-br from-gray-50 to-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <Archive className="w-10 h-10 text-gray-500" />
+      <div className="space-y-6">
+        {/* Header Section with Toggle - Always Visible */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              {showArchived
+                ? "Archived Prayer Requests"
+                : "Prayer Requests Management"}
+            </h2>
+            <p className="text-gray-600 mt-1">
+              {showArchived
+                ? `Viewing ${archivedRequests.length} archived prayer request${
+                    archivedRequests.length !== 1 ? "s" : ""
+                  }`
+                : `Manage ${activeRequests.length} active prayer request${
+                    activeRequests.length !== 1 ? "s" : ""
+                  } from your community`}
+            </p>
+          </div>
+
+          {/* Archive Toggle - Always Visible */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-700">
+                {showArchived ? "Archived" : "Active"}
+              </span>
+              <button
+                onClick={() => setShowArchived(!showArchived)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                  showArchived ? "bg-blue-600" : "bg-gray-200"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    showArchived ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+              <span>{activeRequests.length} Active</span>
+              <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
+              <span>{archivedRequests.length} Archived</span>
+            </div>
+          </div>
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-3">
-          {showArchived ? "No Archived Requests" : "No Active Requests"}
-        </h3>
-        <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
-          {showArchived
-            ? "There are no archived prayer requests. Archived requests will appear here once you archive them from the active requests."
-            : "There are no active prayer requests. All requests have been archived or completed."}
-        </p>
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full text-gray-700 text-sm font-medium">
-          <Archive className="w-4 h-4" />
-          <span>
-            {showArchived ? "No archived requests" : "No active requests"}
-          </span>
+
+        {/* Empty State */}
+        <div className="text-center py-16">
+          <div className="w-20 h-20 bg-gradient-to-br from-gray-50 to-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Archive className="w-10 h-10 text-gray-500" />
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+            {showArchived ? "No Archived Requests" : "No Active Requests"}
+          </h3>
+          <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
+            {showArchived
+              ? "There are no archived prayer requests. Archived requests will appear here once you archive them from the active requests."
+              : "There are no active prayer requests. All requests have been archived or completed."}
+          </p>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full text-gray-700 text-sm font-medium">
+            <Archive className="w-4 h-4" />
+            <span>
+              {showArchived ? "No archived requests" : "No active requests"}
+            </span>
+          </div>
         </div>
       </div>
     );
@@ -776,6 +875,100 @@ export function PrayerRequestsTable({
                         🔒 These notes are for internal use only and won't be
                         shared with the requester.
                       </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reply to User Section */}
+                <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl border-2 border-purple-200 shadow-lg">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <Send className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-gray-900">
+                        Reply to User
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        Send a personalized response to the prayer request
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    {/* Admin Name */}
+                    <div>
+                      <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Your Name (as it will appear to the user)
+                      </Label>
+                      <input
+                        type="text"
+                        value={adminName}
+                        onChange={(e) => setAdminName(e.target.value)}
+                        placeholder="Prayer Team"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      />
+                    </div>
+
+                    {/* Template Selection */}
+                    <div>
+                      <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Quick Reply Templates
+                      </Label>
+                      <Select
+                        value={selectedTemplate}
+                        onValueChange={handleTemplateSelect}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Choose a template or write your own" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {replyTemplates.map((template) => (
+                            <SelectItem key={template.id} value={template.id}>
+                              {template.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Reply Message */}
+                    <div>
+                      <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Your Response Message
+                      </Label>
+                      <Textarea
+                        value={replyMessage}
+                        onChange={(e) => setReplyMessage(e.target.value)}
+                        placeholder="Write a personalized response to the user's prayer request..."
+                        className="w-full min-h-[150px]"
+                        rows={6}
+                      />
+                      <div className="mt-2 text-xs text-gray-500">
+                        💌 This message will be sent directly to the user's
+                        email address.
+                      </div>
+                    </div>
+
+                    {/* Send Reply Button */}
+                    <div className="flex justify-end">
+                      <Button
+                        onClick={handleReplyToUser}
+                        disabled={isSendingReply || !replyMessage.trim()}
+                        className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+                      >
+                        {isSendingReply ? (
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Sending...</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Send className="w-4 h-4" />
+                            <span>Send Reply</span>
+                          </div>
+                        )}
+                      </Button>
                     </div>
                   </div>
                 </div>
