@@ -35,6 +35,7 @@ interface ChurchLocation {
     role?: string;
   }[];
   image?: string;
+  google_maps_url?: string;
 }
 
 // Empty locations array - no fallback data
@@ -129,9 +130,9 @@ export function LocationsContent() {
             </span>
           </h1>
           <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed px-4 lg:px-0">
-            Find all Philadelphia Missionary Church locations across
-            Switzerland. Join us for services, prayer meetings, and fellowship
-            at a location near you.
+            Find all Philadelphia Missionary Church locations across the world.
+            Join us for services, prayer meetings, and fellowship at a location
+            near you.
           </p>
         </motion.div>
 
@@ -152,7 +153,7 @@ export function LocationsContent() {
               </motion.div>
             </div>
             <div className="text-2xl md:text-3xl font-bold text-gray-800 mb-1 md:mb-2">
-              {loading ? "..." : churchLocations.length}
+              {loading ? "..." : "20+"}
             </div>
             <div className="text-sm md:text-base text-gray-600">Churches</div>
           </div>
@@ -197,9 +198,11 @@ export function LocationsContent() {
               </motion.div>
             </div>
             <div className="text-2xl md:text-3xl font-bold text-gray-800 mb-1 md:mb-2">
-              Switzerland
+              Worldwide
             </div>
-            <div className="text-sm md:text-base text-gray-600">Nationwide</div>
+            <div className="text-sm md:text-base text-gray-600">
+              International
+            </div>
           </div>
         </motion.div>
 
@@ -385,11 +388,32 @@ export function LocationsContent() {
 
                   {/* Action Button */}
                   <div className="px-4 md:px-6 pb-4 md:pb-6">
-                    <Button className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white rounded-lg md:rounded-xl group text-sm md:text-base py-2.5 md:py-3">
-                      <MapPin className="mr-2 h-3 w-3 md:h-4 md:w-4 group-hover:scale-110 transition-transform" />
-                      Get Directions
-                      <ArrowRight className="ml-2 h-3 w-3 md:h-4 md:w-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                    {location.google_maps_url ? (
+                      <Button 
+                        asChild
+                        className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white rounded-lg md:rounded-xl group text-sm md:text-base py-2.5 md:py-3"
+                      >
+                        <a 
+                          href={location.google_maps_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center"
+                        >
+                          <MapPin className="mr-2 h-3 w-3 md:h-4 md:w-4 group-hover:scale-110 transition-transform" />
+                          Get Directions
+                          <ArrowRight className="ml-2 h-3 w-3 md:h-4 md:w-4 group-hover:translate-x-1 transition-transform" />
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button 
+                        className="w-full bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-lg md:rounded-xl group text-sm md:text-base py-2.5 md:py-3 cursor-not-allowed opacity-60"
+                        disabled
+                      >
+                        <MapPin className="mr-2 h-3 w-3 md:h-4 md:w-4" />
+                        Directions Not Available
+                        <ArrowRight className="ml-2 h-3 w-3 md:h-4 md:w-4" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -469,7 +493,7 @@ export function LocationsContent() {
                   className="text-gray-600 text-base md:text-lg mb-8 leading-relaxed max-w-2xl mx-auto"
                 >
                   We're preparing to share information about our church
-                  locations across Switzerland. Soon you'll be able to find
+                  locations across the world. Soon you'll be able to find
                   services, contact details, and directions to our churches.
                 </motion.p>
 

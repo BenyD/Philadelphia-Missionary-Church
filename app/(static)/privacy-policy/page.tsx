@@ -2,7 +2,15 @@ import type { Metadata } from "next";
 import { Container } from "@/components/layout/container";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { Shield, Lock, Eye, Users, Database } from "lucide-react";
+import {
+  Shield,
+  Lock,
+  Eye,
+  Users,
+  Database,
+  Heart,
+  Cookie,
+} from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Philadelphia Missionary Church",
@@ -29,44 +37,48 @@ export default function PrivacyPolicyPage() {
       icon: Eye,
       title: "Information We Collect",
       content: [
-        "Personal information you provide (name, email, phone number)",
-        "Information about your participation in church activities",
-        "Donation and giving information",
-        "Website usage data and analytics",
-        "Communication preferences and history",
+        "Personal information you provide through prayer request forms (name, email, phone number)",
+        "Prayer request content and spiritual needs you share with us",
+        "Website usage data and analytics (with your consent)",
+        "Communication preferences and interaction history",
+        "Information about your participation in church events and activities",
+        "Contact information for ministry communications",
       ],
     },
     {
       icon: Database,
       title: "How We Use Your Information",
       content: [
-        "To provide church services and ministry programs",
-        "To communicate about events, services, and activities",
-        "To process donations and maintain financial records",
-        "To improve our website and services",
-        "To comply with legal obligations",
+        "To process and respond to your prayer requests with care and confidentiality",
+        "To provide spiritual support and pastoral care services",
+        "To communicate about church events, services, and ministry activities",
+        "To improve our website and ministry services",
+        "To maintain accurate records of church activities and participation",
+        "To comply with legal obligations and church governance requirements",
       ],
     },
     {
       icon: Lock,
       title: "How We Protect Your Information",
       content: [
-        "Secure data storage and transmission",
-        "Limited access to personal information",
-        "Regular security audits and updates",
-        "Employee training on data protection",
-        "Compliance with privacy regulations",
+        "Secure data storage using Supabase with encryption and access controls",
+        "Limited access to personal information to authorized ministry staff only",
+        "Regular security audits and system updates",
+        "Training for all staff on data protection and confidentiality",
+        "Compliance with GDPR and Swiss data protection regulations",
+        "Secure email communications for prayer request confirmations",
       ],
     },
     {
       icon: Users,
       title: "Sharing Your Information",
       content: [
-        "We do not sell your personal information",
-        "Information may be shared with trusted service providers",
-        "Required disclosures for legal compliance",
-        "With your explicit consent for specific purposes",
-        "Anonymous data may be used for statistical purposes",
+        "We do not sell, trade, or rent your personal information",
+        "Prayer requests are shared only with authorized prayer team members",
+        "Information may be shared with trusted service providers (email services, hosting)",
+        "Required disclosures for legal compliance or church governance",
+        "With your explicit consent for specific ministry purposes",
+        "Anonymous data may be used for ministry effectiveness analysis",
       ],
     },
   ];
@@ -125,17 +137,28 @@ export default function PrivacyPolicyPage() {
                   Our Commitment to Privacy
                 </h2>
                 <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                  Philadelphia Missionary Church is committed to protecting your
-                  privacy and ensuring the security of your personal
-                  information. This Privacy Policy explains how we collect, use,
-                  disclose, and safeguard your information when you visit our
-                  website, attend our services, or interact with our ministry.
+                  Philadelphia Missionary Church, founded in 1989 and serving
+                  communities in Switzerland, India, and Sri Lanka, is committed
+                  to protecting your privacy and ensuring the security of your
+                  personal information. This Privacy Policy explains how we
+                  collect, use, disclose, and safeguard your information when
+                  you visit our website, submit prayer requests, attend our
+                  services, or interact with our ministry.
+                </p>
+                <p className="text-lg text-gray-600 leading-relaxed mb-6">
+                  As a church community, we understand the sensitive nature of
+                  prayer requests and spiritual information. We treat all
+                  personal information, especially prayer requests, with the
+                  utmost care, confidentiality, and respect. Your trust is
+                  sacred to us, and we are committed to maintaining that trust
+                  through transparent and responsible data practices.
                 </p>
                 <p className="text-lg text-gray-600 leading-relaxed">
                   By using our services, you agree to the collection and use of
                   information in accordance with this policy. We will not use or
                   share your information with anyone except as described in this
-                  Privacy Policy.
+                  Privacy Policy and always with the highest regard for your
+                  privacy and spiritual well-being.
                 </p>
               </div>
 
@@ -170,7 +193,44 @@ export default function PrivacyPolicyPage() {
                 ))}
               </div>
 
-              {/* Additional Information */}
+              {/* Prayer Requests and Spiritual Data */}
+              <div className="mt-16 p-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                  <Heart className="w-6 h-6 text-blue-600 mr-3" />
+                  Prayer Requests and Spiritual Data
+                </h3>
+                <div className="space-y-4 text-gray-700">
+                  <p className="text-base leading-relaxed">
+                    <strong>Confidentiality Commitment:</strong> We treat all
+                    prayer requests and spiritual information with the highest
+                    level of confidentiality and respect. Your prayer requests
+                    are shared only with authorized prayer team members who are
+                    committed to maintaining your privacy.
+                  </p>
+                  <p className="text-base leading-relaxed">
+                    <strong>Data Processing:</strong> When you submit a prayer
+                    request, we collect your name, email, phone number
+                    (optional), and the prayer request content. This information
+                    is stored securely and used solely for the purpose of
+                    providing spiritual support and pastoral care.
+                  </p>
+                  <p className="text-base leading-relaxed">
+                    <strong>Communication:</strong> We may send you confirmation
+                    emails when your prayer request is received and may follow
+                    up with spiritual support or pastoral care communications.
+                    You can opt-out of these communications at any time.
+                  </p>
+                  <p className="text-base leading-relaxed">
+                    <strong>Retention:</strong> Prayer request data is retained
+                    for ministry purposes and pastoral care follow-up. You may
+                    request deletion of your prayer request data at any time,
+                    subject to our legal obligations and ministry record-keeping
+                    requirements.
+                  </p>
+                </div>
+              </div>
+
+              {/* Your Rights and Choices */}
               <div className="mt-16 p-8 bg-gradient-to-br from-red-50 to-red-100 rounded-2xl border border-red-200">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   Your Rights and Choices
@@ -182,7 +242,7 @@ export default function PrivacyPolicyPage() {
                     </h4>
                     <p className="text-gray-600 text-sm">
                       You have the right to access, update, or correct your
-                      personal information.
+                      personal information and prayer request data.
                     </p>
                   </div>
                   <div>
@@ -191,7 +251,7 @@ export default function PrivacyPolicyPage() {
                     </h4>
                     <p className="text-gray-600 text-sm">
                       You can opt-out of certain communications and data
-                      collection activities.
+                      collection activities, including analytics cookies.
                     </p>
                   </div>
                   <div>
@@ -200,7 +260,7 @@ export default function PrivacyPolicyPage() {
                     </h4>
                     <p className="text-gray-600 text-sm">
                       You can request a copy of your personal data in a portable
-                      format.
+                      format, including your prayer request history.
                     </p>
                   </div>
                   <div>
@@ -208,10 +268,47 @@ export default function PrivacyPolicyPage() {
                       Deletion
                     </h4>
                     <p className="text-gray-600 text-sm">
-                      You can request deletion of your personal information in
-                      certain circumstances.
+                      You can request deletion of your personal information and
+                      prayer requests, subject to our legal and ministry
+                      obligations.
                     </p>
                   </div>
+                </div>
+              </div>
+
+              {/* Cookies and Analytics */}
+              <div className="mt-16 p-8 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                  <Cookie className="w-6 h-6 text-green-600 mr-3" />
+                  Cookies and Website Analytics
+                </h3>
+                <div className="space-y-4 text-gray-700">
+                  <p className="text-base leading-relaxed">
+                    <strong>Cookie Consent:</strong> Our website uses cookies to
+                    enhance your browsing experience. We respect your privacy
+                    choices and only use analytics cookies with your explicit
+                    consent. You can manage your cookie preferences at any time
+                    through our cookie banner.
+                  </p>
+                  <p className="text-base leading-relaxed">
+                    <strong>Analytics:</strong> We use Google Analytics to
+                    understand how visitors use our website, which helps us
+                    improve our ministry services and website functionality.
+                    Analytics data is collected anonymously and does not
+                    identify individual users.
+                  </p>
+                  <p className="text-base leading-relaxed">
+                    <strong>Essential Cookies:</strong> Some cookies are
+                    necessary for the website to function properly, such as
+                    session management and security features. These cannot be
+                    disabled as they are essential for basic functionality.
+                  </p>
+                  <p className="text-base leading-relaxed">
+                    <strong>Your Control:</strong> You can accept, reject, or
+                    customize your cookie preferences through our cookie banner.
+                    You can also change your preferences at any time by visiting
+                    our Cookie Policy page.
+                  </p>
                 </div>
               </div>
 
@@ -221,14 +318,29 @@ export default function PrivacyPolicyPage() {
                   Contact Us
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  If you have any questions about this Privacy Policy or our
-                  data practices, please contact us:
+                  If you have any questions about this Privacy Policy, our data
+                  practices, or wish to exercise your privacy rights, please
+                  contact us:
                 </p>
                 <div className="space-y-2 text-gray-600">
-                  <p>Philadelphia Missionary Church</p>
-                  <p>123 Church Street, City, State 12345</p>
-                  <p>Email: privacy@pmcchurch.org</p>
-                  <p>Phone: (555) 123-4567</p>
+                  <p className="font-semibold">
+                    Philadelphia Missionary Church
+                  </p>
+                  <p>Sulgeneckstrasse 58</p>
+                  <p>3005 Bern, Switzerland</p>
+                  <p>
+                    Email:{" "}
+                    <a
+                      href="mailto:info@pmcinternational.ch"
+                      className="text-red-600 hover:text-red-700 underline"
+                    >
+                      info@pmcinternational.ch
+                    </a>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-4">
+                    For privacy-specific inquiries, please include "Privacy
+                    Policy" in your email subject line.
+                  </p>
                 </div>
               </div>
             </div>

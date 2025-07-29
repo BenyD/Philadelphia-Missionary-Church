@@ -75,7 +75,7 @@ export function AboutUsContent() {
                 Philadelphia Missionary Church
               </h2>
               <p className="text-sm md:text-lg opacity-90">
-                Serving Switzerland with love and dedication
+                Serving the world with love and dedication
               </p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export function AboutUsContent() {
               </motion.div>
             </div>
             <div className="text-2xl md:text-3xl font-bold text-gray-800 mb-1 md:mb-2">
-              10
+              20+
             </div>
             <div className="text-sm md:text-base text-gray-600">Churches</div>
           </div>
@@ -143,9 +143,9 @@ export function AboutUsContent() {
               </motion.div>
             </div>
             <div className="text-lg md:text-3xl font-bold text-gray-800 mb-1 md:mb-2">
-              Switzerland
+              Worldwide
             </div>
-            <div className="text-sm md:text-base text-gray-600">Nationwide</div>
+            <div className="text-sm md:text-base text-gray-600">International</div>
           </div>
         </motion.div>
 
@@ -197,7 +197,7 @@ export function AboutUsContent() {
             </div>
           </motion.div>
 
-          {/* Growth and Expansion - Image Right */}
+          {/* Paul Satkunarajah - Founder - Image Right */}
           <motion.div
             className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center"
             initial={{ opacity: 0, y: 30 }}
@@ -205,6 +205,58 @@ export function AboutUsContent() {
             transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
           >
             <div className="space-y-4 md:space-y-6 lg:order-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-50 rounded-full border border-red-100 w-fit">
+                <Heart className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
+                <span className="text-xs md:text-sm font-medium text-red-600">
+                  Our Founder
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
+                Paul Satkunarajah
+              </h2>
+              <div className="space-y-3 md:space-y-4 text-base md:text-lg text-gray-700 leading-relaxed">
+                <p>
+                  Paul Satkunarajah, the founder of Philadelphia Missionary Church in Switzerland, India, and Sri Lanka, was a devoted servant of God who dedicated his life to spreading the Gospel. He went to be with God on 17. January 2021. We thank him for his faithful service and the legacy he left behind.
+                </p>
+                <div className="bg-gradient-to-r from-red-50 to-blue-50 p-4 md:p-6 rounded-xl md:rounded-2xl border-l-4 border-red-500 shadow-lg">
+                  <blockquote className="text-base md:text-lg italic text-gray-700">
+                    "When his time of service was complete, he returned home, as heartfeltly expressed in Luke 1:23"
+                  </blockquote>
+                </div>
+              </div>
+            </div>
+            <div className="relative group lg:order-2">
+              <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
+                <img
+                  src="/images/paul.jpg"
+                  alt="Pastor Paul Satkunarajah"
+                  className="w-full h-64 sm:h-80 md:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Growth and Expansion - Image Left */}
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.0, ease: "easeOut" }}
+          >
+            <div className="relative group order-2 lg:order-1">
+              <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-blue-500/20 to-red-500/20 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
+                <img
+                  src="/images/about-growth.jpg"
+                  alt="Church growth"
+                  className="w-full h-64 sm:h-80 md:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+              </div>
+            </div>
+            <div className="space-y-4 md:space-y-6 order-1 lg:order-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full border border-blue-100 w-fit">
                 <Globe className="h-3 w-3 md:h-4 md:w-4 text-blue-500" />
                 <span className="text-xs md:text-sm font-medium text-blue-600">
@@ -232,17 +284,6 @@ export function AboutUsContent() {
                 </p>
               </div>
             </div>
-            <div className="relative group lg:order-2">
-              <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-blue-500/20 to-red-500/20 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
-                <img
-                  src="/images/about-growth.jpg"
-                  alt="Church growth"
-                  className="w-full h-64 sm:h-80 md:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-              </div>
-            </div>
           </motion.div>
 
           {/* Ministry in Switzerland - Image Left */}
@@ -250,7 +291,7 @@ export function AboutUsContent() {
             className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0, ease: "easeOut" }}
+            transition={{ duration: 0.8, delay: 1.2, ease: "easeOut" }}
           >
             <div className="relative group order-2 lg:order-1">
               <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -275,9 +316,9 @@ export function AboutUsContent() {
               </h2>
               <div className="space-y-3 md:space-y-4 text-base md:text-lg text-gray-700 leading-relaxed">
                 <p>
-                  Today, Philadelphia Missionary Church is home to 10 vibrant
-                  churches across Switzerland, with more than 400 believers.
-                  Through the dedication of pastors and leaders, our church
+                  Today, Philadelphia Missionary Church is home to 20+ vibrant
+                  churches across the world, with more than 400 believers.
+                  Through the dedication of pastors and leaders, our international church
                   continues to make disciples and spread the message of
                   salvation in Jesus Christ.
                 </p>

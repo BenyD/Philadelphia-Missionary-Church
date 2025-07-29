@@ -87,6 +87,7 @@ interface Location {
   phone?: string;
   email?: string;
   website?: string;
+  google_maps_url?: string;
   image_url?: string;
   description?: string;
   is_active: boolean;
@@ -125,6 +126,7 @@ export function LocationsTable({ locations }: LocationsTableProps) {
     phone: "",
     email: "",
     website: "",
+    google_maps_url: "",
     image_url: "",
     description: "",
     is_active: true,
@@ -187,6 +189,7 @@ export function LocationsTable({ locations }: LocationsTableProps) {
       phone: "",
       email: "",
       website: "",
+      google_maps_url: "",
       image_url: "",
       description: "",
       is_active: true,
@@ -209,6 +212,7 @@ export function LocationsTable({ locations }: LocationsTableProps) {
       phone: location.phone || "",
       email: location.email || "",
       website: location.website || "",
+      google_maps_url: location.google_maps_url || "",
       image_url: location.image_url || "",
       description: location.description || "",
       is_active: location.is_active,
@@ -990,7 +994,7 @@ export function LocationsTable({ locations }: LocationsTableProps) {
               </div>
             </div>
 
-            {/* Website and Image */}
+            {/* Website and Google Maps URL */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label className="text-sm font-semibold text-gray-700 mb-2 block">
@@ -1008,21 +1012,46 @@ export function LocationsTable({ locations }: LocationsTableProps) {
 
               <div>
                 <Label className="text-sm font-semibold text-gray-700 mb-2 block">
-                  Sort Order
+                  Google Maps URL
                 </Label>
                 <Input
-                  type="number"
-                  value={formData.sort_order}
+                  value={formData.google_maps_url || ""}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      sort_order: parseInt(e.target.value) || 0,
+                      google_maps_url: e.target.value,
                     })
                   }
-                  placeholder="1"
+                  placeholder="https://maps.google.com/?q=..."
                   className="w-full"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter the Google Maps URL for directions to this location.
+                  <br />
+                  <span className="text-blue-600">💡 Tip:</span> Go to Google
+                  Maps, search for your location, click "Share", and copy the
+                  link.
+                </p>
               </div>
+            </div>
+
+            {/* Sort Order */}
+            <div>
+              <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                Sort Order
+              </Label>
+              <Input
+                type="number"
+                value={formData.sort_order}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    sort_order: parseInt(e.target.value) || 0,
+                  })
+                }
+                placeholder="1"
+                className="w-full"
+              />
             </div>
 
             {/* Image Upload */}

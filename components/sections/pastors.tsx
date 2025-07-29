@@ -11,7 +11,8 @@ interface Pastor {
   role: string;
   phone?: string;
   location?: string;
-  imageUrl: string;
+  image_url?: string;
+  bio?: string;
 }
 
 // Empty pastors array - no fallback data
@@ -24,16 +25,35 @@ export function Pastors() {
   useEffect(() => {
     const fetchPastors = async () => {
       try {
-        const response = await fetch("/api/pastors");
+        console.log("Fetching pastors from API...");
+        const response = await fetch("/api/pastors", {
+          cache: "no-store", // Disable caching
+          headers: {
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        });
+
         if (response.ok) {
           const data = await response.json();
+          console.log("Pastors API response:", data);
+
           if (data.pastors && data.pastors.length > 0) {
+            console.log(
+              `Setting ${data.pastors.length} pastors:`,
+              data.pastors
+            );
             setPastors(data.pastors);
+          } else {
+            console.log("No pastors found in response");
+            setPastors([]);
           }
+        } else {
+          console.error("Pastors API response not ok:", response.status);
         }
       } catch (error) {
         console.error("Error fetching pastors:", error);
-        // Don't keep fallback data - show empty state
+        setPastors([]);
       } finally {
         setLoading(false);
       }
@@ -43,7 +63,10 @@ export function Pastors() {
   }, []);
 
   return (
-    <section className="relative py-12 md:py-16 lg:py-24 overflow-hidden">
+    <section
+      id="pastors"
+      className="relative py-12 md:py-16 lg:py-24 overflow-hidden"
+    >
       {/* Simplified Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-red-50/20 to-blue-50/20">
         {/* Single Optimized Background Element */}
@@ -72,7 +95,7 @@ export function Pastors() {
           <div className="inline-flex items-center gap-2 mb-4 px-3 md:px-4 py-2 bg-gradient-to-r from-red-50 to-blue-50 rounded-full border border-red-100">
             <Star className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
             <span className="text-xs md:text-sm font-medium text-gray-600">
-              Our Story
+              Leadership Team
             </span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-pretty text-gray-900">
@@ -129,7 +152,7 @@ export function Pastors() {
                 <div className="relative overflow-hidden rounded-xl md:rounded-2xl border-2 border-red-200">
                   <img
                     alt={pastor.name}
-                    src={pastor.imageUrl}
+                    src={pastor.image_url || "/images/logo.png"}
                     className="aspect-3/2 w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
@@ -137,9 +160,14 @@ export function Pastors() {
                 <h3 className="mt-4 md:mt-6 text-base md:text-lg/8 font-semibold tracking-tight text-gray-900 group-hover:text-red-600 transition-colors duration-200">
                   {pastor.name}
                 </h3>
-                <p className="text-sm md:text-base/7 text-gray-600">
+                <p className="text-sm md:text-base/7 text-gray-600 font-medium">
                   {pastor.role}
                 </p>
+                {pastor.bio && (
+                  <p className="mt-3 text-sm text-gray-500 leading-relaxed line-clamp-3">
+                    {pastor.bio}
+                  </p>
+                )}
               </motion.li>
             ))}
           </motion.ul>

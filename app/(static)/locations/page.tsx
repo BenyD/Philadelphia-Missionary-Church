@@ -7,11 +7,12 @@ import { generateMetadata } from "@/lib/metadata";
 export const metadata: Metadata = generateMetadata({
   title: "Locations",
   description:
-    "Find all Philadelphia Missionary Church locations across Switzerland. Join us for services, prayer meetings, and fellowship at a location near you.",
+    "Find all Philadelphia Missionary Church locations across the world. Join us for services, prayer meetings, and fellowship at a location near you.",
   keywords: [
     "church locations",
     "PMC churches",
-    "Switzerland churches",
+    "international churches",
+    "worldwide churches",
     "church services",
     "prayer meetings",
     "Sunday service",

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, MapPin, Heart } from "lucide-react";
+import Link from "next/link";
 
 export function CTASection() {
   return (
@@ -37,18 +38,26 @@ export function CTASection() {
             transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
             viewport={{ once: true }}
           >
-            <Button className="rounded-md bg-white px-5 md:px-6 py-3 text-sm font-semibold text-gray-900 shadow-lg hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all duration-200 group">
-              <MapPin className="mr-2 h-4 w-4 group-hover:scale-105 transition-transform" />
-              Locations
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            <Button
+              asChild
+              className="rounded-md bg-white px-5 md:px-6 py-3 text-sm font-semibold text-gray-900 shadow-lg hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all duration-200 group"
+            >
+              <Link href="/locations">
+                <MapPin className="mr-2 h-4 w-4 group-hover:scale-105 transition-transform" />
+                Locations
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
             <Button
+              asChild
               variant="ghost"
               className="text-sm/6 font-semibold text-white hover:text-gray-100 hover:bg-white/10 transition-all duration-200 group"
             >
-              <Heart className="mr-2 h-4 w-4 group-hover:scale-105 transition-transform" />
-              Prayer Request
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              <Link href="/prayer-request">
+                <Heart className="mr-2 h-4 w-4 group-hover:scale-105 transition-transform" />
+                Prayer Request
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
           </motion.div>
 

@@ -1,39 +1,51 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { X, Cookie, Shield, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCookieConsent } from "@/hooks/use-cookie-consent";
 
 export function CookieBanner() {
-  const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
+  const {
+    consent,
+    preferences,
+    isLoaded,
+    acceptAll,
+    rejectAll,
+    updatePreferences,
+  } = useCookieConsent();
 
-  useEffect(() => {
-    // Check if user has already made a choice
-    const cookieConsent = localStorage.getItem("cookie-consent");
-    if (!cookieConsent) {
-      // Show banner after a short delay
-      const timer = setTimeout(() => setIsVisible(true), 1000);
+  // Show banner after a delay - moved to top to follow Rules of Hooks
+  React.useEffect(() => {
+    if (isLoaded && consent === null) {
+      const timer = setTimeout(() => {
+        setShowBanner(true);
+      }, 2000); // 2 second delay
+
       return () => clearTimeout(timer);
     }
-  }, []);
-
-  const handleAccept = () => {
-    localStorage.setItem("cookie-consent", "accepted");
-    setIsVisible(false);
-  };
-
-  const handleReject = () => {
-    localStorage.setItem("cookie-consent", "rejected");
-    setIsVisible(false);
-  };
+  }, [isLoaded, consent]);
 
   const handleSettings = () => {
     setIsExpanded(!isExpanded);
   };
 
-  if (!isVisible) return null;
+  // Don't show banner if consent has been given or not loaded yet
+  if (isLoaded && consent !== null) {
+    return null;
+  }
+
+  // Don't render until loaded to prevent hydration issues
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (!showBanner) {
+    return null;
+  }
 
   return (
     <AnimatePresence>
@@ -74,7 +86,7 @@ export function CookieBanner() {
                   </div>
                 </div>
                 <button
-                  onClick={handleReject}
+                  onClick={rejectAll}
                   className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/5"
                 >
                   <X className="h-5 w-5" />
@@ -169,9 +181,24 @@ export function CookieBanner() {
                               Help improve our website
                             </p>
                           </div>
-                          <div className="w-12 h-6 bg-gray-600 rounded-full relative cursor-pointer hover:bg-gray-500 transition-colors">
-                            <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full"></div>
-                          </div>
+                          <button
+                            onClick={() =>
+                              updatePreferences({
+                                analytics: !preferences.analytics,
+                              })
+                            }
+                            className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${
+                              preferences.analytics
+                                ? "bg-blue-500"
+                                : "bg-gray-600 hover:bg-gray-500"
+                            }`}
+                          >
+                            <div
+                              className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                                preferences.analytics ? "right-1" : "left-1"
+                              }`}
+                            ></div>
+                          </button>
                         </div>
                         <div className="flex items-center justify-between">
                           <div>
@@ -182,9 +209,24 @@ export function CookieBanner() {
                               Personalized content
                             </p>
                           </div>
-                          <div className="w-12 h-6 bg-gray-600 rounded-full relative cursor-pointer hover:bg-gray-500 transition-colors">
-                            <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full"></div>
-                          </div>
+                          <button
+                            onClick={() =>
+                              updatePreferences({
+                                marketing: !preferences.marketing,
+                              })
+                            }
+                            className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${
+                              preferences.marketing
+                                ? "bg-purple-500"
+                                : "bg-gray-600 hover:bg-gray-500"
+                            }`}
+                          >
+                            <div
+                              className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                                preferences.marketing ? "right-1" : "left-1"
+                              }`}
+                            ></div>
+                          </button>
                         </div>
                       </div>
                     </motion.div>
@@ -195,13 +237,13 @@ export function CookieBanner() {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button
-                  onClick={handleAccept}
+                  onClick={acceptAll}
                   className="flex-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   Accept All Cookies
                 </Button>
                 <Button
-                  onClick={handleReject}
+                  onClick={rejectAll}
                   variant="outline"
                   className="flex-1 border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50 px-6 py-3 rounded-xl font-medium transition-all duration-300"
                 >

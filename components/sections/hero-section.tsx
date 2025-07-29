@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/layout/container";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -30,9 +31,9 @@ export function HeroSection() {
     },
     {
       title: "Making Disciples",
-      subtitle: "Across Switzerland",
+      subtitle: "Across the World",
       description:
-        "With more than 400 believers and dedicated pastors and leaders, our church continues to make disciples and spread the message of salvation in Jesus Christ.",
+        "With more than 400 believers and dedicated pastors and leaders, our international church continues to make disciples and spread the message of salvation in Jesus Christ.",
       image: "/images/hero-slide-2.jpg",
       badge: "34+ Years of Ministry",
       icon: Heart,
@@ -43,7 +44,7 @@ export function HeroSection() {
       description:
         "This promise has been our guiding light as we continue to grow and serve, knowing that God is opening doors for us to reach more people and make a lasting impact for His kingdom.",
       image: "/images/hero-slide-3.jpg",
-      badge: "10 Churches Nationwide",
+      badge: "20+ Churches Worldwide",
       icon: Globe,
     },
   ];
@@ -60,7 +61,7 @@ export function HeroSection() {
       icon: Users,
       value: "400+",
       label: "Believers",
-      description: "Across Switzerland",
+      description: "Worldwide",
     },
     {
       icon: Heart,
@@ -70,9 +71,9 @@ export function HeroSection() {
     },
     {
       icon: Calendar,
-      value: "10",
+      value: "20+",
       label: "Churches",
-      description: "Across Switzerland",
+      description: "Worldwide",
     },
   ];
 
@@ -161,15 +162,23 @@ export function HeroSection() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
                 >
-                  <Button className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-full text-base md:text-lg font-semibold transition-all duration-200 group">
-                    <span>Prayer Request</span>
-                    <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
+                  <Button
+                    asChild
+                    className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-full text-base md:text-lg font-semibold transition-all duration-200 group"
+                  >
+                    <Link href="/prayer-request">
+                      <span>Prayer Request</span>
+                      <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
+                    </Link>
                   </Button>
                   <Button
+                    asChild
                     variant="outline"
                     className="border-2 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400 px-6 md:px-8 py-3 md:py-4 rounded-full text-base md:text-lg font-semibold transition-all duration-200 group"
                   >
-                    <span>Locations</span>
+                    <Link href="/locations">
+                      <span>Locations</span>
+                    </Link>
                   </Button>
                 </motion.div>
               </motion.div>

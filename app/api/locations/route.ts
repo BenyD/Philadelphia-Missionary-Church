@@ -85,6 +85,7 @@ export async function GET(request: NextRequest) {
       phone: location.phone,
       email: location.email,
       website: location.website,
+      google_maps_url: location.google_maps_url,
       description: location.description
     })) || [];
 

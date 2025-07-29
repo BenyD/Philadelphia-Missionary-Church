@@ -54,6 +54,11 @@ export function Footer() {
       href: "https://www.instagram.com/pmc.international.official/",
       label: "Instagram",
     },
+    {
+      icon: Youtube,
+      href: "https://www.youtube.com/@pmchurchmedia",
+      label: "YouTube",
+    },
   ];
 
   return (

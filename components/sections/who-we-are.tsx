@@ -97,7 +97,7 @@ export function WhoWeAre() {
               </motion.div>
             </div>
             <div className="text-2xl md:text-3xl font-bold text-gray-800 mb-1 md:mb-2">
-              10
+              20+
             </div>
             <div className="text-sm md:text-base text-gray-600">Churches</div>
           </div>
@@ -112,9 +112,11 @@ export function WhoWeAre() {
               </motion.div>
             </div>
             <div className="text-lg md:text-3xl font-bold text-gray-800 mb-1 md:mb-2">
-              Switzerland
+              Worldwide
             </div>
-            <div className="text-sm md:text-base text-gray-600">Nationwide</div>
+            <div className="text-sm md:text-base text-gray-600">
+              International
+            </div>
           </div>
         </motion.div>
 
@@ -189,10 +191,10 @@ export function WhoWeAre() {
                   </div>
                   <div className="space-y-1 md:space-y-2">
                     <h4 className="text-lg md:text-xl font-bold text-gray-800">
-                      Across Switzerland
+                      Across the World
                     </h4>
                     <p className="text-sm md:text-base text-gray-600">
-                      10 vibrant churches
+                      20+ vibrant churches
                     </p>
                   </div>
                 </div>

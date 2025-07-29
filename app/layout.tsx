@@ -4,7 +4,9 @@ import "./globals.css";
 import { NavigationProvider } from "@/components/providers/navigation-provider";
 import { SplashScreenProvider } from "@/components/providers/splash-screen-provider";
 import { SupabaseProvider } from "@/components/providers/supabase-provider";
+import { CookieConsentProvider } from "@/components/providers/cookie-consent-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { CookieBanner } from "@/components/ui/cookie-banner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -163,10 +165,13 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <SupabaseProvider>
-          <NavigationProvider>
-            <SplashScreenProvider>{children}</SplashScreenProvider>
-          </NavigationProvider>
-          <Toaster />
+          <CookieConsentProvider>
+            <NavigationProvider>
+              <SplashScreenProvider>{children}</SplashScreenProvider>
+            </NavigationProvider>
+            <Toaster />
+            <CookieBanner />
+          </CookieConsentProvider>
         </SupabaseProvider>
       </body>
     </html>
