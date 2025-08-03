@@ -20,6 +20,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
     let rafId: number;
@@ -56,6 +57,24 @@ export function Navbar() {
 
         setIsScrolled(scrollTop > 20);
         setScrollProgress(Math.min(Math.max(scrollPercent, 0), 100));
+
+        // Detect active section for highlighting
+        if (window.location.pathname === "/") {
+          const sections = ["who-we-are", "pastors"];
+          let currentSection = "";
+
+          sections.forEach((sectionId) => {
+            const element = document.getElementById(sectionId);
+            if (element) {
+              const rect = element.getBoundingClientRect();
+              if (rect.top <= 100 && rect.bottom >= 100) {
+                currentSection = sectionId;
+              }
+            }
+          });
+
+          setActiveSection(currentSection);
+        }
       });
     };
 
@@ -67,6 +86,27 @@ export function Navbar() {
         cancelAnimationFrame(rafId);
       }
     };
+  }, []);
+
+  // Handle hash navigation when component mounts
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash) {
+        // Wait a bit for the page to fully load
+        setTimeout(() => {
+          const element = document.querySelector(hash);
+          if (element) {
+            element.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+            // Set active section based on hash
+            setActiveSection(hash.substring(1));
+          }
+        }, 100);
+      }
+    }
   }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -128,47 +168,94 @@ export function Navbar() {
             <div className="hidden lg:flex items-center space-x-6">
               {/* Main Navigation Items */}
               <div className="flex items-center space-x-1">
-                {navItems.map((item, index) => (
-                  <div key={item.name} className="relative group">
-                    {item.href.includes("#") ? (
-                      <a
-                        href={item.href}
-                        className="relative text-gray-700 hover:text-red-600 transition-colors duration-200 font-medium px-4 py-2.5 cursor-pointer"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          const element = document.querySelector(
-                            item.href.split("#")[1]
-                          );
-                          if (element) {
-                            element.scrollIntoView({
-                              behavior: "smooth",
-                              block: "start",
-                            });
-                          } else {
-                            // If element not found, navigate to homepage first
-                            window.location.href = item.href;
-                          }
-                        }}
-                      >
-                        <span className="relative">
-                          {item.name}
-                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300 group-hover:w-full"></span>
-                        </span>
-                      </a>
-                    ) : (
-                      <AnimatedLink
-                        href={item.href}
-                        transitionType="fade"
-                        className="relative text-gray-700 hover:text-red-600 transition-colors duration-200 font-medium px-4 py-2.5"
-                      >
-                        <span className="relative">
-                          {item.name}
-                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300 group-hover:w-full"></span>
-                        </span>
-                      </AnimatedLink>
-                    )}
-                  </div>
-                ))}
+                {navItems.map((item, index) => {
+                  const isActive =
+                    (item.href === "/" &&
+                      window.location.pathname === "/" &&
+                      !activeSection) ||
+                    (item.href === "/about" &&
+                      window.location.pathname === "/about") ||
+                    (item.href === "/ministries" &&
+                      window.location.pathname === "/ministries") ||
+                    (item.href === "/events" &&
+                      window.location.pathname === "/events") ||
+                    (item.href === "/gallery" &&
+                      window.location.pathname === "/gallery") ||
+                    (item.href === "/locations" &&
+                      window.location.pathname === "/locations") ||
+                    (item.href.includes("#") &&
+                      activeSection === item.href.split("#")[1]);
+
+                  return (
+                    <div key={item.name} className="relative group">
+                      {item.href.includes("#") ? (
+                        <a
+                          href={item.href}
+                          className={cn(
+                            "relative transition-colors duration-200 font-medium px-4 py-2.5 cursor-pointer",
+                            isActive
+                              ? "text-red-600"
+                              : "text-gray-700 hover:text-red-600"
+                          )}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            const [path, hash] = item.href.split("#");
+                            if (
+                              path === "/" &&
+                              window.location.pathname !== "/"
+                            ) {
+                              // If we're not on homepage, navigate there first
+                              window.location.href = item.href;
+                            } else {
+                              // If we're already on homepage, just scroll to section
+                              const element = document.querySelector(
+                                `#${hash}`
+                              );
+                              if (element) {
+                                element.scrollIntoView({
+                                  behavior: "smooth",
+                                  block: "start",
+                                });
+                                setActiveSection(hash);
+                              }
+                            }
+                          }}
+                        >
+                          <span className="relative">
+                            {item.name}
+                            <span
+                              className={cn(
+                                "absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300",
+                                isActive ? "w-full" : "w-0 group-hover:w-full"
+                              )}
+                            ></span>
+                          </span>
+                        </a>
+                      ) : (
+                        <AnimatedLink
+                          href={item.href}
+                          transitionType="fade"
+                          className={cn(
+                            "relative transition-colors duration-200 font-medium px-4 py-2.5",
+                            isActive
+                              ? "text-red-600"
+                              : "text-gray-700 hover:text-red-600"
+                          )}
+                        >
+                          <span className="relative">
+                            {item.name}
+                            <span
+                              className={cn(
+                                "absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300",
+                                isActive ? "w-full" : "w-0 group-hover:w-full"
+                              )}
+                            ></span>
+                          </span>
+                        </AnimatedLink>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Divider */}
@@ -245,33 +332,65 @@ export function Navbar() {
 
             {/* Navigation Items */}
             <div className="space-y-2 mb-6">
-              {navItems.map((item, index) =>
-                item.href.includes("#") ? (
+              {navItems.map((item, index) => {
+                const isActive =
+                  (item.href === "/" &&
+                    window.location.pathname === "/" &&
+                    !activeSection) ||
+                  (item.href === "/about" &&
+                    window.location.pathname === "/about") ||
+                  (item.href === "/ministries" &&
+                    window.location.pathname === "/ministries") ||
+                  (item.href === "/events" &&
+                    window.location.pathname === "/events") ||
+                  (item.href === "/gallery" &&
+                    window.location.pathname === "/gallery") ||
+                  (item.href === "/locations" &&
+                    window.location.pathname === "/locations") ||
+                  (item.href.includes("#") &&
+                    activeSection === item.href.split("#")[1]);
+
+                return item.href.includes("#") ? (
                   <a
                     key={item.name}
                     href={item.href}
-                    className="block p-4 rounded-xl text-white hover:text-red-400 hover:bg-white/5 transition-all duration-300 font-medium relative group border border-transparent hover:border-red-500/30 hover:scale-[1.02]"
+                    className={cn(
+                      "block p-4 rounded-xl transition-all duration-300 font-medium relative group border border-transparent hover:scale-[1.02]",
+                      isActive
+                        ? "text-red-400 bg-white/10 border-red-500/30"
+                        : "text-white hover:text-red-400 hover:bg-white/5 hover:border-red-500/30"
+                    )}
                     onClick={(e) => {
                       e.preventDefault();
                       setIsMenuOpen(false);
                       setTimeout(() => {
-                        const element = document.querySelector(
-                          item.href.split("#")[1]
-                        );
-                        if (element) {
-                          element.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start",
-                          });
-                        } else {
-                          // If element not found, navigate to homepage first
+                        const [path, hash] = item.href.split("#");
+                        if (path === "/" && window.location.pathname !== "/") {
+                          // If we're not on homepage, navigate there first
                           window.location.href = item.href;
+                        } else {
+                          // If we're already on homepage, just scroll to section
+                          const element = document.querySelector(`#${hash}`);
+                          if (element) {
+                            element.scrollIntoView({
+                              behavior: "smooth",
+                              block: "start",
+                            });
+                            setActiveSection(hash);
+                          }
                         }
                       }, 300); // Small delay to allow menu to close
                     }}
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="w-3 h-3 bg-red-500 rounded-full group-hover:scale-125 transition-transform"></div>
+                      <div
+                        className={cn(
+                          "w-3 h-3 rounded-full transition-transform",
+                          isActive
+                            ? "bg-red-400 scale-125"
+                            : "bg-red-500 group-hover:scale-125"
+                        )}
+                      ></div>
                       <span className="text-lg">{item.name}</span>
                     </div>
                   </a>
@@ -280,16 +399,28 @@ export function Navbar() {
                     key={item.name}
                     href={item.href}
                     transitionType="fade"
-                    className="block p-4 rounded-xl text-white hover:text-red-400 hover:bg-white/5 transition-all duration-300 font-medium relative group border border-transparent hover:border-red-500/30 hover:scale-[1.02]"
+                    className={cn(
+                      "block p-4 rounded-xl transition-all duration-300 font-medium relative group border border-transparent hover:scale-[1.02]",
+                      isActive
+                        ? "text-red-400 bg-white/10 border-red-500/30"
+                        : "text-white hover:text-red-400 hover:bg-white/5 hover:border-red-500/30"
+                    )}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="w-3 h-3 bg-red-500 rounded-full group-hover:scale-125 transition-transform"></div>
+                      <div
+                        className={cn(
+                          "w-3 h-3 rounded-full transition-transform",
+                          isActive
+                            ? "bg-red-400 scale-125"
+                            : "bg-red-500 group-hover:scale-125"
+                        )}
+                      ></div>
                       <span className="text-lg">{item.name}</span>
                     </div>
                   </AnimatedLink>
-                )
-              )}
+                );
+              })}
             </div>
           </div>
 

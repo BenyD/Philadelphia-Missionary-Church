@@ -52,30 +52,55 @@ export function PrayerRequestForm() {
     setSubmitStatus("idle");
 
     try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("prayer_requests")
-        .insert([
-          {
-            full_name: formData.fullName,
-            phone_number: formData.phoneNumber || null,
-            email: formData.email,
-            prayer_request: formData.prayerRequest,
-            status: "pending", // Set initial status
+      // Submit prayer request via API route
+      const response = await fetch("/api/prayer-requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          phoneNumber: formData.phoneNumber,
+          email: formData.email,
+          prayerRequest: formData.prayerRequest,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to submit prayer request");
+      }
+
+      console.log("Prayer request submitted successfully:", result.data);
+
+      // Send confirmation email to user
+      try {
+        const emailResponse = await fetch("/api/email/send-confirmation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        ])
-        .select()
-        .single();
+          body: JSON.stringify({
+            name: formData.fullName,
+            email: formData.email,
+            prayerRequest: formData.prayerRequest,
+            requestId: result.data.id,
+          }),
+        });
 
-      if (error) {
-        console.error("Supabase error:", error);
-        throw new Error(error.message);
-      } else {
-        console.log("Prayer request submitted successfully:", data);
+        if (!emailResponse.ok) {
+          console.error("Failed to send confirmation email");
+        }
+      } catch (emailError) {
+        console.error("Error sending confirmation email:", emailError);
+      }
 
-        // Send confirmation email to user
-        try {
-          const emailResponse = await fetch("/api/email/send-confirmation", {
+      // Send admin notification
+      try {
+        const adminResponse = await fetch(
+          "/api/email/send-admin-notification",
+          {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -83,52 +108,27 @@ export function PrayerRequestForm() {
             body: JSON.stringify({
               name: formData.fullName,
               email: formData.email,
+              phone: formData.phoneNumber,
               prayerRequest: formData.prayerRequest,
-              requestId: data.id,
+              requestId: result.data.id,
             }),
-          });
-
-          if (!emailResponse.ok) {
-            console.error("Failed to send confirmation email");
           }
-        } catch (emailError) {
-          console.error("Error sending confirmation email:", emailError);
+        );
+
+        if (!adminResponse.ok) {
+          console.error("Failed to send admin notification");
         }
-
-        // Send admin notification
-        try {
-          const adminResponse = await fetch(
-            "/api/email/send-admin-notification",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                name: formData.fullName,
-                email: formData.email,
-                phone: formData.phoneNumber,
-                prayerRequest: formData.prayerRequest,
-                requestId: data.id,
-              }),
-            }
-          );
-
-          if (!adminResponse.ok) {
-            console.error("Failed to send admin notification");
-          }
-        } catch (adminError) {
-          console.error("Error sending admin notification:", adminError);
-        }
-
-        setSubmitStatus("success");
-        setFormData({
-          fullName: "",
-          phoneNumber: "",
-          email: "",
-          prayerRequest: "",
-        });
+      } catch (adminError) {
+        console.error("Error sending admin notification:", adminError);
       }
+
+      setSubmitStatus("success");
+      setFormData({
+        fullName: "",
+        phoneNumber: "",
+        email: "",
+        prayerRequest: "",
+      });
     } catch (error) {
       console.error("Error submitting prayer request:", error);
       setSubmitStatus("error");

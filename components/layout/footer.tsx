@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect } from "react";
 import {
   Mail,
   Phone,
@@ -10,9 +13,29 @@ import {
 } from "lucide-react";
 import { Container } from "./container";
 import { Logo } from "@/components/ui/logo";
+import Link from "next/link";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+
+  // Handle hash navigation when component mounts
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash) {
+        // Wait a bit for the page to fully load
+        setTimeout(() => {
+          const element = document.querySelector(hash);
+          if (element) {
+            element.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        }, 100);
+      }
+    }
+  }, []);
 
   const footerSections = [
     {
@@ -31,9 +54,9 @@ export function Footer() {
       title: "About Us",
       links: [
         { name: "Our Story", href: "/about" },
-        { name: "Who We Are", href: "/about#who-we-are" },
-        { name: "Our Pastors", href: "/about#pastors" },
-        { name: "Our Mission", href: "/about#mission" },
+        { name: "Who We Are", href: "/#who-we-are" },
+        { name: "Our Pastors", href: "/#pastors" },
+        { name: "Our Mission", href: "/ministries" },
       ],
     },
   ];
@@ -145,16 +168,49 @@ export function Footer() {
               <ul className="space-y-3">
                 {section.links.map((link) => (
                   <li key={link.name}>
-                    <a
-                      href={link.href}
-                      className="text-gray-200 hover:text-red-400 transition-colors duration-200 flex items-center group relative"
-                    >
-                      <span className="w-2 h-2 bg-red-500/50 rounded-full mr-3 group-hover:bg-red-400 transition-colors"></span>
-                      <span className="relative">
-                        {link.name}
-                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300 group-hover:w-full"></span>
-                      </span>
-                    </a>
+                    {link.href.includes("#") ? (
+                      <a
+                        href={link.href}
+                        className="text-gray-200 hover:text-red-400 transition-colors duration-200 flex items-center group relative"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const [path, hash] = link.href.split("#");
+                          if (
+                            path === "/" &&
+                            window.location.pathname !== "/"
+                          ) {
+                            // If we're not on homepage, navigate there first
+                            window.location.href = link.href;
+                          } else {
+                            // If we're already on homepage, just scroll to section
+                            const element = document.querySelector(`#${hash}`);
+                            if (element) {
+                              element.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start",
+                              });
+                            }
+                          }
+                        }}
+                      >
+                        <span className="w-2 h-2 bg-red-500/50 rounded-full mr-3 group-hover:bg-red-400 transition-colors"></span>
+                        <span className="relative">
+                          {link.name}
+                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300 group-hover:w-full"></span>
+                        </span>
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-gray-200 hover:text-red-400 transition-colors duration-200 flex items-center group relative"
+                      >
+                        <span className="w-2 h-2 bg-red-500/50 rounded-full mr-3 group-hover:bg-red-400 transition-colors"></span>
+                        <span className="relative">
+                          {link.name}
+                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300 group-hover:w-full"></span>
+                        </span>
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

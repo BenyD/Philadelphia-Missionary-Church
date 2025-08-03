@@ -145,7 +145,9 @@ export function AboutUsContent() {
             <div className="text-lg md:text-3xl font-bold text-gray-800 mb-1 md:mb-2">
               Worldwide
             </div>
-            <div className="text-sm md:text-base text-gray-600">International</div>
+            <div className="text-sm md:text-base text-gray-600">
+              International
+            </div>
           </div>
         </motion.div>
 
@@ -216,11 +218,16 @@ export function AboutUsContent() {
               </h2>
               <div className="space-y-3 md:space-y-4 text-base md:text-lg text-gray-700 leading-relaxed">
                 <p>
-                  Paul Satkunarajah, the founder of Philadelphia Missionary Church in Switzerland, India, and Sri Lanka, was a devoted servant of God who dedicated his life to spreading the Gospel. He went to be with God on 17. January 2021. We thank him for his faithful service and the legacy he left behind.
+                  Paul Satkunarajah, the founder of Philadelphia Missionary
+                  Church in Switzerland, India, and Sri Lanka, was a devoted
+                  servant of God who dedicated his life to spreading the Gospel.
+                  He went to be with God on 17. January 2021. We thank him for
+                  his faithful service and the legacy he left behind.
                 </p>
                 <div className="bg-gradient-to-r from-red-50 to-blue-50 p-4 md:p-6 rounded-xl md:rounded-2xl border-l-4 border-red-500 shadow-lg">
                   <blockquote className="text-base md:text-lg italic text-gray-700">
-                    "When his time of service was complete, he returned home, as heartfeltly expressed in Luke 1:23"
+                    "When his time of service was complete, he returned home, as
+                    heartfeltly expressed in Luke 1:23"
                   </blockquote>
                 </div>
               </div>
@@ -318,9 +325,9 @@ export function AboutUsContent() {
                 <p>
                   Today, Philadelphia Missionary Church is home to 20+ vibrant
                   churches across the world, with more than 400 believers.
-                  Through the dedication of pastors and leaders, our international church
-                  continues to make disciples and spread the message of
-                  salvation in Jesus Christ.
+                  Through the dedication of pastors and leaders, our
+                  international church continues to make disciples and spread
+                  the message of salvation in Jesus Christ.
                 </p>
                 <div className="bg-gradient-to-r from-red-50 to-blue-50 p-4 md:p-6 rounded-xl md:rounded-2xl border-l-4 border-red-500 shadow-lg">
                   <blockquote className="text-base md:text-lg italic text-gray-700">

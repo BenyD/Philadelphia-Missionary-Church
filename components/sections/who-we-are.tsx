@@ -16,7 +16,7 @@ import {
 
 export function WhoWeAre() {
   return (
-    <section className="relative py-12 md:py-16 lg:py-24 overflow-hidden">
+    <section id="who-we-are" className="relative py-12 md:py-16 lg:py-24 overflow-hidden">
       {/* Optimized Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-red-50/20 to-blue-50/20">
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 md:w-96 h-64 md:h-96 bg-gradient-to-r from-red-400/10 to-blue-400/10 rounded-full blur-3xl" />

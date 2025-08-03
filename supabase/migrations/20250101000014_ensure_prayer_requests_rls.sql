@@ -1,0 +1,23 @@
+-- Ensure prayer_requests table has correct RLS policies for public submissions
+
+-- Drop all existing policies to start fresh
+DROP POLICY IF EXISTS "Allow authenticated users to read prayer requests" ON prayer_requests;
+DROP POLICY IF EXISTS "Allow authenticated users to update prayer requests" ON prayer_requests;
+DROP POLICY IF EXISTS "Allow authenticated users to delete prayer requests" ON prayer_requests;
+DROP POLICY IF EXISTS "Allow public users to insert prayer requests" ON prayer_requests;
+
+-- Create policy to allow public users to insert prayer requests (for form submissions)
+CREATE POLICY "Allow public users to insert prayer requests" ON prayer_requests
+  FOR INSERT WITH CHECK (true);
+
+-- Create policy to allow authenticated users to read all prayer requests (for admin dashboard)
+CREATE POLICY "Allow authenticated users to read prayer requests" ON prayer_requests
+  FOR SELECT USING (auth.role() = 'authenticated');
+
+-- Create policy to allow authenticated users to update prayer requests (for admin dashboard)
+CREATE POLICY "Allow authenticated users to update prayer requests" ON prayer_requests
+  FOR UPDATE USING (auth.role() = 'authenticated');
+
+-- Create policy to allow authenticated users to delete prayer requests (for admin dashboard)
+CREATE POLICY "Allow authenticated users to delete prayer requests" ON prayer_requests
+  FOR DELETE USING (auth.role() = 'authenticated'); 
